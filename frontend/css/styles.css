@@ -20,3 +20,10 @@ body {
     display: flex;
     align-items: center;
 }
+
+.sidebar {
+  width: 20%;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
