@@ -41,3 +41,29 @@ CREATE TABLE IF NOT EXISTS users (
 -- CREATE TABLE ...
 -- CREATE TABLE ...
 -- ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY ...
+
+-- poupa pig -- 
+
+
+create table if not exists itens_compras (
+    id int unsigned auto_increment primary key, 
+    users_id int unsigned not null, 
+    price decimal(10,2) not null, 
+    category_ic varchar(60) not null, 
+    created_at timestamp not null default current_timestamp;
+)
+
+create table if not exists transactions (
+    id int unsigned auto_increment primary key,
+    itens_id int unsigned not null, 
+    type enum ('purchase', 'abandonment') not null, 
+    amount decimal(10,2) not null,
+    transaction_date timestamp not null default current_timestamp,
+    created_at timestamp not null default current_timestamp;
+)
+
+create table if not exists category (
+    id int unsigned auto_increment primary key,
+    name varchar(120) not null, 
+    created_at timestamp not null default current_timestamp;
+)
