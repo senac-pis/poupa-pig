@@ -55,20 +55,20 @@ create table if not exists items (
     id int unsigned auto_increment primary key,
     user_id int unsigned not null, 
     category_id int unsigned not null, 
-    name varchar(120) not null, 
+    name varchar(180) not null, 
     price decimal(10,2) not null,
     link text, 
     image text,
     reason text,
-    quarantine_deadline date not null, 
-    status enum('in_quarantine', 'purchased', 'abandoned') not null default 'in_quarantine',
+    thinking_deadline date not null, 
+    status enum('thinking', 'bought', 'abandoned') not null default 'thinking',
     created_at timestamp not null default current_timestamp,
     decided_at timestamp null default null, 
     constraint fk_items_user
         foreign key (user_id) references users(id)
         on delete cascade, 
     constraint fk_items_category
-        foreign key (category_id) references categories(id)
+        foreign key (category_id) references category(id)
         on delete restrict
 );
 
