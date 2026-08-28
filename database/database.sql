@@ -51,22 +51,24 @@ create table if not exists category (
     created_at timestamp not null default current_timestamp
 );
 
-create table if not exists purchase_items (
+create table if not exists items (
     id int unsigned auto_increment primary key,
-    users_id int unsigned not null,
-    category_id int unsigned not null,
+    user_id int unsigned not null, 
+    category_id int unsigned not null, 
+    name varchar(120) not null, 
     price decimal(10,2) not null,
+    link text, 
+    image text,
+    reason text,
+    quarantine_deadline date not null, 
+    status enum('in_quarantine', 'purchased', 'abandoned') not null default 'in_quarantine',
     created_at timestamp not null default current_timestamp,
-    foreign key (users_id) references users(id),
-    foreign key (category_id) references category(id)
+    decided_at timestamp null default null, 
+    constraint fk_items_user
+        foreign key (user_id) references users(id)
+        on delete cascade, 
+    constraint fk_items_category
+        foreign key (category_id) references categories(id)
+        on delete restrict
 );
 
-create table if not exists transactions (
-    id int unsigned auto_increment primary key,
-    purchase_item_id int unsigned not null,
-    type enum ('purchase', 'abandonment') not null,
-    amount decimal(10,2) not null,
-    transaction_date timestamp not null default current_timestamp,
-    created_at timestamp not null default current_timestamp,
-    foreign key (purchase_item_id) references purchase_items(id)
-);
