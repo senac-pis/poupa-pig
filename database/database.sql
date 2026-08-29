@@ -61,7 +61,7 @@ create table if not exists items (
     image text,
     reason text,
     thinking_deadline date not null, 
-    status enum('thinking', 'bought', 'abandoned') not null default 'thinking',
+    status enum('thinking', 'bought', 'gave_up') not null default 'thinking',
     created_at timestamp not null default current_timestamp,
     decided_at timestamp null default null, 
     constraint fk_items_user
