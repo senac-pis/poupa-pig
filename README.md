@@ -31,7 +31,7 @@ Pessoas que querem controlar melhor o próprio consumo por impulso — sem perfi
 
 - HTML5
 - CSS3
-- Bootstrap
+- Tailwind CSS
 - PHP
 - MySQL
 - phpMyAdmin
