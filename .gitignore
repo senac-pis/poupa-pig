@@ -12,6 +12,7 @@ backend/config/database.php
 .vscode/
 .idea/
 *.code-workspace
+.claude/
 
 # ==========================================================
 # Sistema operacional

@@ -25,7 +25,7 @@ Evite concentrar HTML, consultas SQL, regras de negócio e estilos em um único 
 ```text
 Usuário
   ↓
-Interface (HTML/CSS/Bootstrap)
+Interface (HTML/CSS/Tailwind CSS)
   ↓
 PHP
   ↓
