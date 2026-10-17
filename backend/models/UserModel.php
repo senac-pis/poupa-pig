@@ -33,4 +33,3 @@ function createUser(PDO $pdo, string $name, string $email, string $passwordHash)
     // TODO (Lucas): implementar a query
     throw new RuntimeException('createUser ainda não implementada');
 }
-?>
