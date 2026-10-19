@@ -1,15 +1,15 @@
 <?php
-/**
- * LOGO
- *
- * "POUPA" + mascote + "PIG", usada no topo das telas de acesso.
- * O caminho da imagem é relativo às páginas em frontend/pages/.
- */
+// $logoSize = 'small' antes do include deixa a logo no tamanho da sidebar
+$isSmallLogo = ($logoSize ?? 'large') === 'small';
+$logoTextClass = $isSmallLogo ? 'text-[28px]' : 'text-4xl sm:text-[64px]';
+$logoMascotClass = $isSmallLogo ? 'size-[90px]' : 'size-24 sm:size-[173px]';
+
+unset($logoSize);
 ?>
 <div class="flex items-center justify-center">
-    <span class="text-4xl font-bold sm:text-[64px]">POUPA</span>
-    <div class="relative size-24 shrink-0 overflow-hidden sm:size-[173px]">
+    <span class="<?= $logoTextClass ?> font-bold">POUPA</span>
+    <div class="relative <?= $logoMascotClass ?> shrink-0 overflow-hidden">
         <img src="../assets/logos/logo.png" alt="Mascote Poupa Pig" class="absolute left-[-17.99%] top-[-12.36%] h-[150.43%] w-[140.51%] max-w-none">
     </div>
-    <span class="text-4xl font-bold text-secondary sm:text-[64px]">PIG</span>
+    <span class="<?= $logoTextClass ?> font-bold text-secondary">PIG</span>
 </div>
