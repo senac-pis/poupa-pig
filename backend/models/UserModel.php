@@ -17,8 +17,21 @@
  */
 function findUserByEmail(PDO $pdo, string $email): ?array
 {
-    // TODO (Lucas): implementar a query
-    throw new RuntimeException('findUserByEmail ainda não implementada');
+    $stmt = $pdo->prepare(
+        'SELECT id, name, email, password_hash, role
+         FROM users
+         WHERE email = :email
+         LIMIT 1'
+    );
+    $stmt->execute([':email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user === false) {
+        return null;
+    }
+
+    $user['id'] = (int) $user['id'];
+    return $user;
 }
 
 /**
@@ -30,6 +43,15 @@ function findUserByEmail(PDO $pdo, string $email): ?array
  */
 function createUser(PDO $pdo, string $name, string $email, string $passwordHash): int
 {
-    // TODO (Lucas): implementar a query
-    throw new RuntimeException('createUser ainda não implementada');
+    $stmt = $pdo->prepare(
+        'INSERT INTO users (name, email, password_hash)
+         VALUES (:name, :email, :password_hash)'
+    );
+    $stmt->execute([
+        ':name'          => $name,
+        ':email'         => $email,
+        ':password_hash' => $passwordHash,
+    ]);
+
+    return (int) $pdo->lastInsertId();
 }
