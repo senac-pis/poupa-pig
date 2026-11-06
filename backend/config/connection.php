@@ -21,6 +21,7 @@ try {
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ]);
 } catch (PDOException $exception) {
-    // Em produção, não exponha detalhes internos da exceção ao usuário.
-    exit('Não foi possível conectar ao banco de dados.');
+    // Detalhe só no log do servidor, nunca para o usuário.
+    error_log('[connection] ' . $exception->getMessage());
+    throw new RuntimeException('Não foi possível conectar ao banco de dados.', 0, $exception);
 }
