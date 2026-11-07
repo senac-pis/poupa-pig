@@ -5,6 +5,6 @@
  * Links institucionais exibidos no final das telas.
  */
 ?>
-<footer class="text-center text-lg font-extralight">
+<footer class="text-center text-sm font-extralight">
     © PoupaPig • <a href="#" class="hover:underline">Contato</a> • <a href="#" class="hover:underline">Política de Privacidade</a>
 </footer>
