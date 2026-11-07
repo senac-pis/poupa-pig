@@ -1,4 +1,8 @@
 <?php
+/** @var int $currentPage */
+/** @var int $totalPages */
+/** @var int $shownItems */
+/** @var int $totalItems */
 // Antes do include: $currentPage, $totalPages, $shownItems e $totalItems (a página valida o ?page=)
 $totalPages = max(1, (int) $totalPages);
 $currentPage = min(max(1, (int) $currentPage), $totalPages);
