@@ -41,4 +41,10 @@ return [
         'status'  => 500,
         'message' => 'Algo deu errado do nosso lado. Tenta de novo daqui a pouco.',
     ],
+    // Cadastro: nome com mais de 120 caracteres (limite da coluna users.name)
+    'INVALID_NAME' => [
+        'status'  => 422,
+        'message' => 'Esse nome é muito longo. Use até 120 caracteres.',
+    ],
+    
 ];
