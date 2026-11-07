@@ -112,18 +112,9 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
             <img src="../assets/icons/chevron-down.svg" alt="" width="32" height="32" class="size-8 transition group-open/period:rotate-180">
         </summary>
 
-        <div class="mt-5 flex gap-2.5">
-            <?php foreach (['start' => 'Início', 'end' => 'Fim'] as $field => $label): ?>
-                <label class="relative flex flex-1 flex-col gap-[11px] rounded-2xl bg-background p-[15px] has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-secondary">
-                    <span class="text-lg font-medium"><?= $label ?></span>
-                    <span class="flex items-center gap-2.5">
-                        <img src="../assets/icons/calendar-range.svg" alt="" width="24" height="24" class="size-6">
-                        <!-- O ícone nativo do calendário cobre a caixa toda, invisível: clicar em qualquer lugar abre o seletor -->
-                        <input type="date" name="<?= $field ?>" value="<?= $period[$field]?->format('Y-m-d') ?>"
-                            class="w-full bg-transparent text-xl font-medium outline-none <?= $period[$field] ? '' : 'text-gray-300' ?> [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:size-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0">
-                    </span>
-                </label>
-            <?php endforeach; ?>
+        <div class="mt-5">
+            <?php $datePeriod = ['start' => $period['start'], 'end' => $period['end'], 'background' => 'bg-background']; ?>
+            <?php include __DIR__ . '/date-period.php'; ?>
         </div>
     </details>
 
