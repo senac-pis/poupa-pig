@@ -16,9 +16,9 @@ foreach ($field['attributes'] ?? [] as $attribute => $attributeValue) {
 }
 ?>
 <div class="flex flex-col">
-    <label for="<?= $fieldId ?>" class="text-2xl font-bold"><?= htmlspecialchars($field['label']) ?></label>
+    <label for="<?= $fieldId ?>" class="text-base font-bold"><?= htmlspecialchars($field['label']) ?></label>
     <input type="<?= htmlspecialchars($fieldType) ?>" id="<?= $fieldId ?>" name="<?= htmlspecialchars($field['name']) ?>"
         value="<?= htmlspecialchars($field['value'] ?? '') ?>" placeholder="<?= htmlspecialchars($field['placeholder'] ?? '') ?>"
         <?= !empty($field['required']) ? 'required' : '' ?> <?= !empty($field['autofocus']) ? 'autofocus' : '' ?><?= $extraAttributes ?>
-        class="w-full rounded-lg bg-white-100 px-5 py-2.5 text-2xl outline-none placeholder:text-black-200 focus:ring-2 focus:ring-secondary [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none">
+        class="w-full rounded-lg bg-white-100 px-4 py-2 text-base outline-none placeholder:text-black-200 focus:ring-2 focus:ring-secondary [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none">
 </div>

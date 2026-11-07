@@ -15,23 +15,23 @@ $cancelUrl = htmlspecialchars('?' . http_build_query(array_diff_key($_GET, ['act
 
 <!-- Mesma base do drawer: o <dialog> com showModal() já dá Esc e foco preso dentro dele -->
 <dialog aria-labelledby="confirm-title" data-close-url="<?= $cancelUrl ?>"
-    class="m-auto w-full max-w-[500px] rounded-2xl border border-black-100 bg-background p-0 backdrop:bg-blue-alpha-500">
+    class="m-auto w-full max-w-[400px] rounded-2xl border border-black-100 bg-background p-0 backdrop:bg-blue-alpha-500">
     <!-- O conteúdo cobre o dialog todo: assim um clique que chega no próprio dialog só pode ter sido no fundo -->
-    <div class="flex flex-col items-center gap-10 p-10 text-center">
-        <h2 id="confirm-title" class="text-5xl font-bold text-red-400"><?= htmlspecialchars($confirmDialog['title']) ?></h2>
-        <p class="text-[32px] font-light text-black-500">
+    <div class="flex flex-col items-center gap-6 p-8 text-center">
+        <h2 id="confirm-title" class="text-[28px] font-bold text-red-400"><?= htmlspecialchars($confirmDialog['title']) ?></h2>
+        <p class="text-xl font-light text-black-500">
             Tem certeza que deseja remover <?= htmlspecialchars($confirmDialog['name']) ?>?
         </p>
 
-        <form method="post" action="<?= htmlspecialchars($confirmDialog['action']) ?>" class="flex gap-[30px]">
+        <form method="post" action="<?= htmlspecialchars($confirmDialog['action']) ?>" class="flex gap-4">
             <input type="hidden" name="id" value="<?= (int) $confirmDialog['id'] ?>">
             <button type="submit"
-                class="h-[68px] w-[200px] cursor-pointer rounded-[48px] bg-red-400 text-2xl text-background transition hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                class="h-11 w-36 cursor-pointer rounded-[48px] bg-red-400 text-lg text-background transition hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                 Remover
             </button>
             <!-- O foco começa aqui: um Enter sem querer não apaga nada -->
             <a href="<?= $cancelUrl ?>" autofocus
-                class="flex h-[68px] w-[200px] items-center justify-center rounded-[48px] border border-primary text-2xl text-primary transition hover:bg-blue-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary">
+                class="flex h-11 w-36 items-center justify-center rounded-[48px] border border-primary text-lg text-primary transition hover:bg-blue-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary">
                 Cancelar
             </a>
         </form>

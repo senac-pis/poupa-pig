@@ -32,7 +32,7 @@ if ($period['start'] && $period['end']) {
 $summaryClass = 'flex cursor-pointer list-none items-center justify-between rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary [&::-webkit-details-marker]:hidden';
 $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:checked]:text-secondary has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-secondary';
 ?>
-<form method="get" class="flex w-full max-w-[571px] flex-col gap-[30px] rounded-2xl bg-white-100 p-[30px] text-primary">
+<form method="get" class="flex w-full max-w-[400px] flex-col gap-4 rounded-2xl bg-white-100 p-5 text-primary">
     <!-- Mantém a busca da URL; a página volta para a 1 num filtro novo -->
     <?php foreach ($_GET as $name => $value): ?>
         <?php if (is_string($value) && !in_array($name, ['category', 'start', 'end', 'page'], true)): ?>
@@ -40,33 +40,33 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
         <?php endif; ?>
     <?php endforeach; ?>
 
-    <h2 class="text-[32px] font-medium">Filtros</h2>
+    <h2 class="text-2xl font-medium">Filtros</h2>
     <hr class="border-pink-100">
 
     <details class="group/category">
         <summary class="<?= $summaryClass ?>">
-            <span class="flex flex-col text-2xl">
+            <span class="flex flex-col text-lg">
                 <span class="font-medium text-secondary">Categorias</span>
                 <span class="font-light"><?= htmlspecialchars($categoryLabel) ?></span>
             </span>
-            <img src="../assets/icons/chevron-down.svg" alt="" width="32" height="32" class="size-8 transition group-open/category:rotate-180">
+            <img src="../assets/icons/chevron-down.svg" alt="" width="24" height="24" class="size-6 transition group-open/category:rotate-180">
         </summary>
 
-        <details class="group/combo relative mt-5">
-            <summary class="flex h-[75px] cursor-pointer list-none items-center justify-between rounded-2xl bg-background p-5 text-2xl font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary [&::-webkit-details-marker]:hidden">
+        <details class="group/combo relative mt-3">
+            <summary class="flex h-12 cursor-pointer list-none items-center justify-between rounded-2xl bg-background px-4 text-lg font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary [&::-webkit-details-marker]:hidden">
                 <?= htmlspecialchars($categoryLabel) ?>
-                <img src="../assets/icons/chevron-expand.svg" alt="" width="30" height="30" class="size-[30px]">
+                <img src="../assets/icons/chevron-expand.svg" alt="" width="24" height="24" class="size-6">
             </summary>
 
-            <div class="absolute inset-x-[18px] top-full z-10 mt-2.5 flex flex-col gap-5 rounded-2xl bg-white-100 py-5 shadow-card">
-                <label class="flex items-center gap-2.5 px-5">
+            <div class="absolute inset-x-[18px] top-full z-10 mt-2 flex flex-col gap-3 rounded-2xl bg-white-100 py-3 shadow-card">
+                <label class="flex items-center gap-2.5 px-4">
                     <img src="../assets/icons/search.svg" alt="" width="20" height="20" class="size-5">
                     <input type="search" placeholder="Buscar categoria..." aria-label="Buscar categoria" data-category-search
-                        class="w-full bg-transparent text-2xl outline-none placeholder:text-gray-300">
+                        class="w-full bg-transparent text-lg outline-none placeholder:text-gray-300">
                 </label>
                 <hr class="border-pink-100">
 
-                <div class="flex max-h-60 flex-col gap-2.5 overflow-y-auto px-10 text-2xl">
+                <div class="flex max-h-60 flex-col gap-2 overflow-y-auto px-6 text-lg">
                     <label class="<?= $optionClass ?>">
                         <input type="radio" name="category" value="" class="sr-only" <?= $selectedCategory ? '' : 'checked' ?>>
                         Todas as categorias
@@ -85,34 +85,34 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
     <hr class="border-pink-100">
 
     <div class="flex items-center justify-between">
-        <span class="flex flex-col text-2xl">
+        <span class="flex flex-col text-lg">
             <span class="font-medium text-secondary">Valor</span>
             <span class="font-light">Todos os preços</span>
         </span>
-        <img src="../assets/icons/chevron-down.svg" alt="" width="32" height="32" class="size-8">
+        <img src="../assets/icons/chevron-down.svg" alt="" width="24" height="24" class="size-6">
     </div>
     <hr class="border-pink-100">
 
     <div class="flex items-center justify-between">
-        <span class="flex flex-col text-2xl">
+        <span class="flex flex-col text-lg">
             <span class="font-medium text-secondary">Status</span>
             <span class="font-light">Todos os status</span>
         </span>
-        <img src="../assets/icons/chevron-down.svg" alt="" width="32" height="32" class="size-8">
+        <img src="../assets/icons/chevron-down.svg" alt="" width="24" height="24" class="size-6">
     </div>
     <hr class="border-pink-100">
 
     <!-- Fica aberto quando já tem data, para dar para escolher a outra sem reabrir -->
     <details class="group/period" <?= $period['start'] || $period['end'] ? 'open' : '' ?>>
         <summary class="<?= $summaryClass ?>">
-            <span class="flex flex-col text-2xl">
+            <span class="flex flex-col text-lg">
                 <span class="font-medium text-secondary">Período</span>
                 <span class="font-light"><?= $periodLabel ?></span>
             </span>
-            <img src="../assets/icons/chevron-down.svg" alt="" width="32" height="32" class="size-8 transition group-open/period:rotate-180">
+            <img src="../assets/icons/chevron-down.svg" alt="" width="24" height="24" class="size-6 transition group-open/period:rotate-180">
         </summary>
 
-        <div class="mt-5">
+        <div class="mt-3">
             <?php $datePeriod = ['start' => $period['start'], 'end' => $period['end'], 'background' => 'bg-background']; ?>
             <?php include __DIR__ . '/date-period.php'; ?>
         </div>

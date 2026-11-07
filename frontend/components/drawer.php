@@ -16,15 +16,15 @@ $closeUrl = htmlspecialchars('?' . http_build_query(array_diff_key($_GET, ['acti
 
 <!-- O <dialog> com showModal() já dá Esc, foco preso dentro dele e o resto da página ignorado -->
 <dialog aria-labelledby="drawer-title" data-close-url="<?= $closeUrl ?>"
-    class="fixed inset-y-0 left-auto right-0 m-0 h-full max-h-none w-[640px] max-w-full bg-background p-0 text-primary backdrop:bg-blue-alpha-500">
+    class="fixed inset-y-0 left-auto right-0 m-0 h-full max-h-none w-[480px] max-w-full bg-background p-0 text-primary backdrop:bg-blue-alpha-500">
     <!-- O conteúdo cobre o dialog todo: assim um clique que chega no próprio dialog só pode ter sido no fundo -->
-    <div class="flex h-full flex-col gap-[30px] overflow-y-auto p-[30px]">
-        <div class="flex items-center gap-[30px]">
+    <div class="flex h-full flex-col gap-5 overflow-y-auto p-6">
+        <div class="flex items-center gap-4">
             <a href="<?= $closeUrl ?>" aria-label="Voltar" title="Voltar"
                 class="shrink-0 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary">
-                <img src="../assets/icons/arrow-left-circle-pink.svg" alt="" width="48" height="48" class="size-12">
+                <img src="../assets/icons/arrow-left-circle-pink.svg" alt="" width="36" height="36" class="size-9">
             </a>
-            <h2 id="drawer-title" class="text-5xl font-bold text-secondary"><?= htmlspecialchars($drawerTitle) ?></h2>
+            <h2 id="drawer-title" class="text-[32px] font-bold text-secondary"><?= htmlspecialchars($drawerTitle) ?></h2>
         </div>
 
         <?php include $drawerTemplate; ?>
