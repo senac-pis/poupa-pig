@@ -4,7 +4,7 @@
 // 'item' null = Novo item; com o $row (mesmo formato da linha da tabela + 'category_id') = Editar
 // O backend valida tudo de novo; na foto: tamanho, tipo real pelo conteúdo e nome gerado por ele
 $formItem = $itemForm['item'];
-$formPhoto = $formItem['photo'] ?? '';
+$formPhoto = $formItem['image'] ?? '';
 $formCategoryId = (int) ($formItem['category_id'] ?? 0);
 
 // Datas do item chegam como Y-m-d; no Novo, o Início já vem com hoje
@@ -23,7 +23,7 @@ if ($formItem) {
 
     <!-- A caixa toda é o label: clicar em qualquer lugar abre a escolha do arquivo -->
     <label class="flex cursor-pointer flex-col items-center justify-center gap-[5px] rounded-2xl border border-dashed border-primary p-4 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-secondary">
-        <input type="file" name="photo" accept="image/png,image/jpeg" class="sr-only" data-photo-input>
+        <input type="file" name="image" accept="image/png,image/jpeg" class="sr-only" data-photo-input>
         <img src="<?= htmlspecialchars($formPhoto) ?>" alt="Foto do item" width="48" height="48" class="size-12 rounded-lg object-cover <?= $formPhoto ? '' : 'hidden' ?>" data-photo-preview>
         <img src="../assets/icons/camera.svg" alt="" width="48" height="48" class="size-12 <?= $formPhoto ? 'hidden' : '' ?>" data-photo-placeholder>
         <span class="text-lg font-thin"><?= $formPhoto ? 'Alterar foto' : 'Adicionar foto' ?></span>
