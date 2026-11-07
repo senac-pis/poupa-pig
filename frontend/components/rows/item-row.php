@@ -2,7 +2,9 @@
 /** @var array $row vem do foreach do table.php */
 // Uma linha da tabela de Itens; o table.php inclui este arquivo para cada $row
 // $row vem do banco já com o JOIN da categoria:
-// ['id', 'name', 'photo', 'price', 'start_date', 'end_date', 'category_name', 'category_icon', 'category_color']
+// ['id', 'name', 'photo', 'price', 'link', 'start_date', 'end_date',
+//  'category_id', 'category_name', 'category_icon', 'category_color']
+// ('link' e 'category_id' não aparecem na linha, mas o formulário de editar usa o mesmo $row)
 
 // Datas chegam como Y-m-d; se vier algo inválido, mostra "—" em vez de quebrar a linha
 $rowDates = [];
