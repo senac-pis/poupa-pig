@@ -6,7 +6,7 @@
  *
  * Contrato com o backend:
  * - $items e $categories são fixos por enquanto; o backend troca pela consulta ao banco,
- *   já filtrada por ?search, ?category, ?start, ?end e ?page;
+ *   já filtrada por ?search, ?category, ?start_date, ?end_date e ?page;
  * - cada item segue o formato descrito em components/rows/item-row.php;
  * - os forms enviam POST para backend/controllers/create-item.php, update-item.php e delete-item.php;
  * - depois de salvar, o backend volta para esta tela deixando a mensagem em $_SESSION['notification'].
@@ -21,11 +21,12 @@ $items = [
     [
         'id' => 5,
         'name' => 'Ps5',
-        'photo' => '',
+        'image' => '',
         'price' => 4000,
         'link' => 'https://www.casasbahia.com.br',
         'start_date' => '2026-09-11',
         'end_date' => '2026-10-11',
+        'status' => 'thinking',
         'category_id' => 1,
         'category_name' => 'Eletrônico',
         'category_icon' => 'phone-vibrate',
@@ -34,11 +35,12 @@ $items = [
     [
         'id' => 6,
         'name' => 'Celular',
-        'photo' => '',
+        'image' => '',
         'price' => 2000,
         'link' => '',
         'start_date' => '2026-09-05',
         'end_date' => '2026-09-15',
+        'status' => 'gave_up',
         'category_id' => 1,
         'category_name' => 'Eletrônico',
         'category_icon' => 'phone-vibrate',
@@ -47,11 +49,12 @@ $items = [
     [
         'id' => 7,
         'name' => 'Blusa',
-        'photo' => '',
+        'image' => '',
         'price' => 4000,
         'link' => '',
         'start_date' => '2026-09-04',
         'end_date' => '2026-09-07',
+        'status' => 'bought',
         'category_id' => 2,
         'category_name' => 'Roupas',
         'category_icon' => 'eyeglasses',

@@ -1,6 +1,6 @@
 <?php
 // Antes do include: $categories = [['id' => 1, 'name' => 'Eletrônico', 'count' => 2], ...]
-// Os filtros vão pela URL (?category=1&start=2026-01-01&end=2026-01-31) e aplicam sozinhos
+// Os filtros vão pela URL (?category=1&start_date=2026-01-01&end_date=2026-01-31) e aplicam sozinhos
 $categories = $categories ?? [];
 $categoryNames = array_column($categories, 'name', 'id');
 
@@ -14,7 +14,7 @@ $categoryLabel = $selectedCategory ? $categoryNames[$selectedCategory] : 'Todas 
 // Só aceita datas reais no formato do <input type="date">
 $period = [];
 foreach (['start', 'end'] as $field) {
-    $value = $_GET[$field] ?? '';
+    $value = $_GET[$field . '_date'] ?? '';
     $date = is_string($value) ? DateTime::createFromFormat('!Y-m-d', $value) : false;
     $period[$field] = $date && $date->format('Y-m-d') === $value ? $date : null;
 }
@@ -35,7 +35,7 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
 <form method="get" class="flex w-full max-w-[400px] flex-col gap-4 rounded-2xl bg-white-100 p-5 text-primary">
     <!-- Mantém a busca da URL; a página volta para a 1 num filtro novo -->
     <?php foreach ($_GET as $name => $value): ?>
-        <?php if (is_string($value) && !in_array($name, ['category', 'start', 'end', 'page'], true)): ?>
+        <?php if (is_string($value) && !in_array($name, ['category', 'start_date', 'end_date', 'page'], true)): ?>
             <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>">
         <?php endif; ?>
     <?php endforeach; ?>
@@ -126,7 +126,7 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
             // Aplica o filtro assim que algo muda (a busca não tem name, então não dispara)
             form.addEventListener('change', (event) => {
                 if (event.target.name) {
-                    // Campo vazio desabilitado não vai para a URL (evita ?start=&end=)
+                    // Campo vazio desabilitado não vai para a URL (evita ?start_date=&end_date=)
                     form.querySelectorAll('[name]').forEach((field) => {
                         field.disabled = field.value === '';
                     });

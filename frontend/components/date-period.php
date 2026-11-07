@@ -1,7 +1,8 @@
 <?php
 /** @var array $datePeriod */
 // Antes do include: $datePeriod = ['start' => DateTime|null, 'end' => DateTime|null, 'background' => 'bg-white-100']
-// Opcional: 'required' => true. As datas chegam já validadas por quem usa (filtro ou página)
+// Opcional: 'required' => true. Os campos se chamam start_date e end_date, como no banco.
+// As datas chegam já validadas por quem usa (filtro ou página)
 $periodRequired = !empty($datePeriod['required']);
 ?>
 <div class="flex gap-2.5">
@@ -17,7 +18,7 @@ $periodRequired = !empty($datePeriod['required']);
             <span class="flex items-center gap-2.5">
                 <img src="../assets/icons/calendar-range.svg" alt="" width="24" height="24" class="size-6">
                 <!-- O ícone nativo do calendário cobre a caixa toda, invisível: clicar em qualquer lugar abre o seletor -->
-                <input type="date" name="<?= $periodField ?>" value="<?= $periodDate?->format('Y-m-d') ?>" <?= $periodRequired ? 'required' : '' ?>
+                <input type="date" name="<?= $periodField ?>_date" value="<?= $periodDate?->format('Y-m-d') ?>" <?= $periodRequired ? 'required' : '' ?>
                     class="w-full min-w-0 bg-transparent text-lg font-medium outline-none <?= $emptyClass ?> [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:size-full [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0">
             </span>
         </label>
