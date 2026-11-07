@@ -33,6 +33,13 @@ $summaryClass = 'flex cursor-pointer list-none items-center justify-between roun
 $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:checked]:text-secondary has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-secondary';
 ?>
 <form method="get" class="flex w-full max-w-[571px] flex-col gap-[30px] rounded-2xl bg-white-100 p-[30px] text-primary">
+    <!-- Mantém a busca da URL; a página volta para a 1 num filtro novo -->
+    <?php foreach ($_GET as $name => $value): ?>
+        <?php if (is_string($value) && !in_array($name, ['category', 'start', 'end', 'page'], true)): ?>
+            <input type="hidden" name="<?= htmlspecialchars($name) ?>" value="<?= htmlspecialchars($value) ?>">
+        <?php endif; ?>
+    <?php endforeach; ?>
+
     <h2 class="text-[32px] font-medium">Filtros</h2>
     <hr class="border-pink-100">
 
