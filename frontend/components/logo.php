@@ -1,8 +1,8 @@
 <?php
 // $logoSize = 'small' antes do include deixa a logo no tamanho da sidebar
 $isSmallLogo = ($logoSize ?? 'large') === 'small';
-$logoTextClass = $isSmallLogo ? 'text-[28px]' : 'text-4xl sm:text-[64px]';
-$logoMascotClass = $isSmallLogo ? 'size-[90px]' : 'size-24 sm:size-[173px]';
+$logoTextClass = $isSmallLogo ? 'text-[22px]' : 'text-3xl sm:text-[44px]';
+$logoMascotClass = $isSmallLogo ? 'size-[64px]' : 'size-20 sm:size-[120px]';
 
 unset($logoSize);
 ?>
