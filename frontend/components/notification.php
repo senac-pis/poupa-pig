@@ -9,9 +9,14 @@
  *
  * Contrato com o backend:
  * $_SESSION['notification'] = [
- *     'type' => 'error',               // 'error' ou 'success'
- *     'code' => 'INVALID_CREDENTIALS', // chave do mapa de mensagens
+ *     'type'  => 'error',         // 'error' ou 'success'
+ *     'code'  => 'INVALID_EMAIL', // chave do errors.php ou do success.php
+ *     'field' => 'email',         // opcional: input com problema
  * ];
+ *
+ * Com 'field', o aviso no canto não aparece: o componente deixa
+ * $fieldError = ['field' => 'email', 'message' => '...'] para a página
+ * mostrar a mensagem embaixo do input. Sem 'field', $fieldError é null.
  *
  * Como usar:
  * 1. session_start() no topo da página, antes de qualquer HTML;
@@ -20,17 +25,33 @@
  */
 
 $notification = $_SESSION['notification'] ?? null;
+$fieldError = null;
+$message = null;
 
 // Apaga da sessão para a mensagem aparecer uma vez só
 unset($_SESSION['notification']);
 
-if ($notification):
-    // Por enquanto só existe o mapa de erros; o de sucesso entra quando precisar
-    $messages = require __DIR__ . '/../../backend/config/errors.php';
-    $code = $notification['code'] ?? '';
-    $message = $messages[$code]['message'] ?? $messages['UNKNOWN_ERROR']['message'];
-
+if ($notification) {
     $isSuccess = ($notification['type'] ?? '') === 'success';
+    $code = $notification['code'] ?? '';
+
+    if ($isSuccess) {
+        // Código de sucesso desconhecido não mostra nada
+        $messages = require __DIR__ . '/../../backend/config/success.php';
+        $message = $messages[$code]['message'] ?? null;
+    } else {
+        $messages = require __DIR__ . '/../../backend/config/errors.php';
+        $message = $messages[$code]['message'] ?? $messages['UNKNOWN_ERROR']['message'];
+    }
+
+    $errorField = $notification['field'] ?? '';
+    if ($message !== null && $errorField !== '') {
+        $fieldError = ['field' => $errorField, 'message' => $message];
+        $message = null;
+    }
+}
+
+if ($message !== null):
     $image = $isSuccess ? 'pig-happy.png' : 'pig-angry.png';
     $borderColor = $isSuccess ? 'border-green-500' : 'border-red-400';
     $role = $isSuccess ? 'status' : 'alert';
