@@ -1,4 +1,5 @@
 <?php
+/** @var string $searchPlaceholder */
 // Antes do include: $searchPlaceholder e $categories (repassado para o filters.php)
 // A busca vai pela URL (?search=ps5) e aplica com Enter
 $rawSearch = $_GET['search'] ?? '';
@@ -9,6 +10,8 @@ $searchTerm = is_string($rawSearch) ? mb_substr(trim($rawSearch), 0, 100) : '';
 ob_start();
 include __DIR__ . '/filters.php';
 $filtersHtml = ob_get_clean();
+/** @var int $selectedCategory */
+/** @var array $period */
 
 $activeFilters = ($selectedCategory ? 1 : 0) + ($period['start'] || $period['end'] ? 1 : 0);
 $filterLabel = $activeFilters ? "Filtros ($activeFilters)" : 'Todos';

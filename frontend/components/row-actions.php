@@ -1,4 +1,5 @@
 <?php
+/** @var array $rowActions */
 // Antes do include: $rowActions = ['id' => 5, 'name' => 'Ps5'] (montado de novo a cada linha)
 // Os links só abrem o drawer ou o modal; quem apaga de verdade é o POST do modal
 $actionId = (int) $rowActions['id'];

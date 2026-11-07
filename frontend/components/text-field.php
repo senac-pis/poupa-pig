@@ -1,4 +1,5 @@
 <?php
+/** @var array $field */
 // Antes do include (montado de novo a cada campo):
 // $field = ['name' => 'name', 'label' => 'Nome', 'value' => '', 'placeholder' => 'Informe o nome do produto']
 // Opcionais: 'type' (padrão 'text'), 'required', 'autofocus' e 'attributes' (ex.: ['maxlength' => '100'])

@@ -1,4 +1,5 @@
 <?php
+/** @var array $datePeriod */
 // Antes do include: $datePeriod = ['start' => DateTime|null, 'end' => DateTime|null, 'background' => 'bg-white-100']
 // Opcional: 'required' => true. As datas chegam já validadas por quem usa (filtro ou página)
 $periodRequired = !empty($datePeriod['required']);

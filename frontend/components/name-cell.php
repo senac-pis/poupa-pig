@@ -1,4 +1,5 @@
 <?php
+/** @var array $cell */
 // Antes do include: $cell = ['name' => 'Ps5', 'description' => '', 'photo' => '', 'icon' => 'phone-vibrate', 'color' => 'sky']
 // Monte o $cell de novo a cada linha, para não sobrar foto ou descrição da linha anterior
 $categoryStyles ??= require __DIR__ . '/../../backend/config/categories.php';

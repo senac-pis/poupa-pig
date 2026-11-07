@@ -1,4 +1,6 @@
 <?php
+/** @var string $drawerTitle */
+/** @var string $drawerTemplate */
 // Antes do include: $drawerTitle e $drawerTemplate (o arquivo com o conteúdo, ex.: o form do item)
 // A página só inclui o drawer quando a URL pede (?action=new ou ?action=edit&id=5)
 

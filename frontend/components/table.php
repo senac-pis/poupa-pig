@@ -1,4 +1,8 @@
 <?php
+/** @var string[] $columns */
+/** @var array $rows */
+/** @var string $rowTemplate */
+/** @var string $emptyMessage */
 // Antes do include: $columns, $rows, $rowTemplate e $emptyMessage
 // $columns = ['Item', 'Categoria', 'Valor', ...]
 // $rowTemplate = __DIR__ . '/rows/item-row.php' (desenha um <tr> usando $row e escapa o que mostra)

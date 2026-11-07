@@ -1,4 +1,5 @@
 <?php
+/** @var string $pageTitle */
 // Antes do include: $pageTitle e, se a tela tiver botão, $actionLabel e $actionHref
 $actionLabel = $actionLabel ?? '';
 $actionHref = $actionHref ?? '';

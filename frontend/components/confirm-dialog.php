@@ -1,4 +1,5 @@
 <?php
+/** @var array $confirmDialog */
 // Antes do include: $confirmDialog = ['title' => 'Remover item', 'name' => 'Ps5', 'id' => 5, 'action' => '<endpoint do backend>']
 // A página só inclui quando a URL pede (?action=remove&id=5); quem apaga é o POST do botão Remover
 
