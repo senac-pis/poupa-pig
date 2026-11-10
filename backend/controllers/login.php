@@ -10,8 +10,7 @@
 session_start();
 
 const LOGIN_PAGE = '../../frontend/pages/login.php';
-// TODO: trocar quando existir a área logada (por enquanto não há destino definido)
-const NEXT_PAGE = '../../frontend/pages/login.php';
+const NEXT_PAGE = '../../frontend/pages/items.php';
 
 /**
  * Grava o erro na sessão e volta para o login. Nunca guarda a senha.

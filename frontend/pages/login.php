@@ -7,8 +7,9 @@
  * Contrato com o backend (backend/controllers/login.php):
  * - o form envia POST com os campos email e password;
  * - em caso de erro, o backend volta para esta tela deixando na sessão:
- *   $_SESSION['notification'] = ['type' => 'error', 'code' => 'CODIGO'];
+ *   $_SESSION['notification'] = ['type' => 'error', 'code' => 'CODIGO', 'field' => 'email'];
  *   $_SESSION['old_input'] = ['email' => 'email digitado'];
+ *   ('field' só vem nos erros de um campo; INVALID_CREDENTIALS fica no aviso do canto)
  * - em caso de sucesso, o backend redireciona para a próxima tela.
  */
 
@@ -28,6 +29,7 @@ unset($_SESSION['old_input']);
 </head>
 <body class="min-h-screen bg-background font-sans text-primary">
     <?php include __DIR__ . '/../components/notification.php'; ?>
+    <?php $errorFor = $fieldError['field'] ?? ''; ?>
 
     <main class="flex min-h-screen flex-col items-center justify-center gap-5 px-4 py-10">
         <?php include __DIR__ . '/../components/logo.php'; ?>
@@ -39,14 +41,22 @@ unset($_SESSION['old_input']);
                 <div class="flex w-full flex-col items-start gap-[5px]">
                     <label for="email" class="text-base font-bold">E-mail</label>
                     <input type="email" id="email" name="email" autocomplete="email" required
-                        value="<?=  htmlspecialchars($oldEmail) ?>"
-                        class="h-11 w-full rounded-[32px] border border-primary bg-transparent px-4 text-base outline-none focus:ring-2 focus:ring-secondary">
+                        value="<?= htmlspecialchars($oldEmail) ?>"
+                        <?= $errorFor === 'email' ? 'aria-invalid="true" aria-describedby="email-error" autofocus' : '' ?>
+                        class="h-11 w-full rounded-[32px] border <?= $errorFor === 'email' ? 'border-red-400' : 'border-primary' ?> bg-transparent px-4 text-base outline-none focus:ring-2 focus:ring-secondary">
+                    <?php if ($errorFor === 'email'): ?>
+                        <p id="email-error" class="px-4 text-sm text-red-400"><?= htmlspecialchars($fieldError['message']) ?></p>
+                    <?php endif; ?>
                 </div>
 
                 <div class="flex w-full flex-col items-start gap-[5px]">
                     <label for="password" class="text-base font-bold">Senha</label>
                     <input type="password" id="password" name="password" autocomplete="current-password" required
-                        class="h-11 w-full rounded-[32px] border border-primary bg-transparent px-4 text-base outline-none focus:ring-2 focus:ring-secondary">
+                        <?= $errorFor === 'password' ? 'aria-invalid="true" aria-describedby="password-error" autofocus' : '' ?>
+                        class="h-11 w-full rounded-[32px] border <?= $errorFor === 'password' ? 'border-red-400' : 'border-primary' ?> bg-transparent px-4 text-base outline-none focus:ring-2 focus:ring-secondary">
+                    <?php if ($errorFor === 'password'): ?>
+                        <p id="password-error" class="px-4 text-sm text-red-400"><?= htmlspecialchars($fieldError['message']) ?></p>
+                    <?php endif; ?>
                 </div>
 
                 <div class="flex w-full flex-col items-center justify-center gap-2.5 py-3">

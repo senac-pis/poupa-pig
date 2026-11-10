@@ -5,13 +5,12 @@
  * Recebe (POST): name, email e password.
  * Erro: grava notification (com o campo com problema) + old_input na sessão
  *       e volta para a tela de cadastro.
- * Sucesso: cria o usuário e redireciona para o login.
+ * Sucesso: cria o usuário e volta para o login com a mensagem de conta criada.
  */
 
 session_start();
 
 const REGISTER_PAGE = '../../frontend/pages/register.php';
-// TODO: combinar com o Kaio se, após cadastrar, vai para o login ou entra logado
 const SUCCESS_PAGE = '../../frontend/pages/login.php';
 
 const MIN_PASSWORD_LENGTH = 8;
@@ -95,8 +94,9 @@ try {
     redirectWithError('UNKNOWN_ERROR', '', $name, $email);
 }
 
-// 5. Sucesso: limpa o que sobrou na sessão e segue.
-unset($_SESSION['old_input'], $_SESSION['notification']);
+// 5. Sucesso: avisa que a conta foi criada e leva o email para o login já preenchido.
+$_SESSION['notification'] = ['type' => 'success', 'code' => 'ACCOUNT_CREATED'];
+$_SESSION['old_input'] = ['email' => $email];
 
 header('Location: ' . SUCCESS_PAGE);
 exit;
