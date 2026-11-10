@@ -14,10 +14,11 @@ const NEXT_PAGE = '../../frontend/pages/items.php';
 
 /**
  * Grava o erro na sessão e volta para o login. Nunca guarda a senha.
+ * $field diz ao front qual input marcar ('' quando o erro não é de um campo).
  */
-function redirectWithError(string $code, string $email = ''): void
+function redirectWithError(string $code, string $field, string $email = ''): void
 {
-    $_SESSION['notification'] = ['type' => 'error', 'code' => $code];
+    $_SESSION['notification'] = ['type' => 'error', 'code' => $code, 'field' => $field];
     $_SESSION['old_input'] = ['email' => $email];
     header('Location: ' . LOGIN_PAGE);
     exit;
@@ -34,12 +35,16 @@ $email = isset($_POST['email']) && is_string($_POST['email']) ? trim($_POST['ema
 $password = isset($_POST['password']) && is_string($_POST['password']) ? $_POST['password'] : '';
 
 // 3. Valida no servidor.
-if ($email === '' || $password === '') {
-    redirectWithError('REQUIRED_FIELD', $email);
+if ($email === '') {
+    redirectWithError('REQUIRED_FIELD', 'email', $email);
+}
+
+if ($password === '') {
+    redirectWithError('REQUIRED_FIELD', 'password', $email);
 }
 
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    redirectWithError('INVALID_EMAIL', $email);
+    redirectWithError('INVALID_EMAIL', 'email', $email);
 }
 
 // 4. Busca o usuário e confere a senha.
@@ -53,12 +58,12 @@ try {
 
     // Email inexistente e senha errada: mesmo código, para não revelar quais emails existem.
     if ($user === null || !password_verify($password, $user['password_hash'])) {
-        redirectWithError('INVALID_CREDENTIALS', $email);
+        redirectWithError('INVALID_CREDENTIALS', '', $email);
     }
 } catch (Throwable $e) {
     // Detalhe interno só no log do servidor, nunca para o usuário.
     error_log('[login] ' . $e->getMessage());
-    redirectWithError('UNKNOWN_ERROR', $email);
+    redirectWithError('UNKNOWN_ERROR', '', $email);
 }
 
 // 5. Sucesso: renova o id da sessão e guarda só o necessário (nunca o hash).
