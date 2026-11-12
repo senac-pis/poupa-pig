@@ -45,10 +45,17 @@ CREATE TABLE IF NOT EXISTS users (
 -- poupa pig -- 
 
 
-create table if not exists category (
+create table if not exists categories (
     id int unsigned auto_increment primary key,
+    user_id int unsigned not null,
     name varchar(120) not null,
+    icon varchar(50) not null default 'box-seam', 
+    color varchar(50) not null default 'gray',
+    description text null, 
     created_at timestamp not null default current_timestamp
+    constraint fk_categories_user 
+        foreign key (user_id) references users(id)
+        on delete cascade 
 );
 
 create table if not exists items (
@@ -71,4 +78,5 @@ create table if not exists items (
         foreign key (category_id) references category(id)
         on delete restrict
 );
+
 
