@@ -33,9 +33,9 @@ $periodOptionClass = 'group flex w-full cursor-pointer items-center justify-betw
         <p hidden class="mt-1 text-sm text-red-400" data-period-error>Escolha a data de início e a de fim.</p>
     <?php endif; ?>
 
-    <!-- Um calendário só para as duas caixas: abre embaixo delas, para a caixa que foi clicada -->
+    <!-- Um calendário só para as duas caixas: abre em cima delas (embaixo cortava no fim da tela) -->
     <div hidden role="dialog" aria-label="Escolher data" data-period-popup
-        class="absolute left-0 top-full z-30 mt-2 flex w-[300px] flex-col gap-3 rounded-2xl bg-white-100 p-4 text-primary shadow-card">
+        class="absolute bottom-full left-0 z-30 mb-2 flex w-[300px] flex-col gap-3 rounded-2xl bg-white-100 p-4 text-primary shadow-card">
         <div class="flex items-center justify-between">
             <button type="button" aria-label="Mês anterior" title="Mês anterior" data-period-prev class="<?= $periodNavClass ?>">
                 <img src="../assets/icons/chevron-down.svg" alt="" width="20" height="20" class="size-5 rotate-90">
