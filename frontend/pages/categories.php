@@ -137,6 +137,16 @@ $statCards = [
             'id' => $selectedCategory['id'],
             'action' => '../../backend/controllers/delete-category.php',
         ];
+
+        // Categoria com itens não pode ser removida: o modal só avisa, sem o botão Remover.
+        // O delete-category.php também precisa recusar, porque o POST pode chegar direto
+        $itemCount = (int) $selectedCategory['item_count'];
+        if ($itemCount === 1) {
+            $confirmDialog['blocked'] = "{$selectedCategory['name']} tem 1 item. Mova ou remova o item antes de remover a categoria.";
+        } elseif ($itemCount > 1) {
+            $confirmDialog['blocked'] = "{$selectedCategory['name']} tem $itemCount itens. Mova ou remova os itens antes de remover a categoria.";
+        }
+
         include __DIR__ . '/../components/confirm-dialog.php';
         ?>
     <?php endif; ?>
