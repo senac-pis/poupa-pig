@@ -1,7 +1,7 @@
 <?php
 /** @var string $searchPlaceholder */
 // Antes do include: $searchPlaceholder e $categories (repassado para o filters.php)
-// Opcional: $filtersEnabled = false mostra o botão "Todos" sem abrir o painel de filtros
+// Opcional: $filtersEnabled = false esconde o botão de filtros (telas sem filtro, como Categorias)
 // A busca vai pela URL (?search=ps5) e aplica com Enter
 $rawSearch = $_GET['search'] ?? '';
 $searchTerm = is_string($rawSearch) ? mb_substr(trim($rawSearch), 0, 100) : '';
@@ -49,11 +49,5 @@ $filterButtonClass = 'flex cursor-pointer list-none items-center gap-2.5 rounded
                 <?= $filtersHtml ?>
             </div>
         </details>
-    <?php else: ?>
-        <!-- Sem função por enquanto: a equipe ainda vai decidir se esta tela tem filtro -->
-        <button type="button" class="<?= $filterButtonClass ?> shrink-0">
-            <img src="../assets/icons/filter.svg" alt="" width="20" height="20" class="size-5">
-            <?= $filterLabel ?>
-        </button>
     <?php endif; ?>
 </div>
