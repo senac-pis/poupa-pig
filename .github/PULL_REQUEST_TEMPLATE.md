@@ -25,7 +25,7 @@ Closes #00
 ### Front-end
 
 - [ ] HTML/PHP das páginas
-- [ ] CSS/Bootstrap
+- [ ] CSS/Tailwind CSS
 - [ ] JavaScript
 - [ ] Responsividade/interface
 

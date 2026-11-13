@@ -1,6 +1,23 @@
-<?php 
-// Lógica: receber $_POST, validar,
-// password_verify(), iniciar sessão, etc.
+<?php
+/**
+ * TELA DE LOGIN
+ *
+ * Layout implementado a partir do Figma (Desktop - Light mode tela de login).
+ * 
+ * Contrato com o backend (backend/controllers/login.php):
+ * - o form envia POST com os campos email e password;
+ * - em caso de erro, o backend volta para esta tela deixando na sessão:
+ *   $_SESSION['notification'] = ['type' => 'error', 'code' => 'CODIGO', 'field' => 'email'];
+ *   $_SESSION['old_input'] = ['email' => 'email digitado'];
+ *   ('field' só vem nos erros de um campo; INVALID_CREDENTIALS fica no aviso do canto)
+ * - em caso de sucesso, o backend redireciona para a próxima tela.
+ */
+
+session_start();
+
+// Email digitado na tentativa anterior, para o usuário não redigitar
+$oldEmail = $_SESSION['old_input']['email'] ?? '';
+unset($_SESSION['old_input']);
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -8,58 +25,53 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login — Poupa Pig</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../css/styles.css">
+    <?php include __DIR__ . '/../components/theme.php'; ?>
 </head>
-<body>
-    <div class="container-fluid min-vh-100 d-flex flex-column py-4">
-        <header class="text-center mb-4">
-            <img src="../assets/logos/logo.svg" alt="Poupa Pig" height="90">
-        </header>
+<body class="min-h-screen bg-background font-sans text-primary">
+    <?php include __DIR__ . '/../components/notification.php'; ?>
+    <?php $errorFor = $fieldError['field'] ?? ''; ?>
 
-        <main class="row justify-content-center align-items-center flex-grow-1">
-            <div class="col-11 col-sm-8 col-md-6 col-lg-6">
-                <div class="login-wrapper position-relative">
-                    <img src="../assets/images/character-lateral.svg" alt="" class="login-character d-none d-lg-block">
+    <main class="flex min-h-screen flex-col items-center justify-center gap-5 px-4 py-10">
+        <?php include __DIR__ . '/../components/logo.php'; ?>
 
-                    <div class="card login-card">
-                    <div class="card-body p-4 p-md-5">
-                        <h1 class="h3 text-center fw-bold mb-4 login-title">
-                            Seja bem vindo(a)
-                        </h1>
+        <section class="flex w-full flex-col items-start gap-5 rounded-[32px] border border-primary px-6 py-8 shadow-card sm:w-auto sm:px-16">
+            <h1 class="text-2xl font-bold sm:text-[30px]">Seja bem vindo(a)</h1>
 
-                        <form action="" method="post">
-                            <div class="mb-3">
-                                <label for="email" class="form-label fw-semibold">E-mail</label>
-                                <input type="email" id="email" name="email" class="form-control" required>
-                            </div>
-
-                            <div class="mb-1">
-                                <label for="password" class="form-label fw-semibold">Senha</label>
-                                <input type="password" id="password" name="password" class="form-control" required>
-                            </div>
-
-                            <div class="text-end mb-4">
-                                <a href="#" class="forgot-password-link small">Esqueceu a senha?</a>
-                            </div>
-
-                            <div class="d-flex gap-3">
-                                <button type="submit" class="btn btn-enter flex-fill">ENTRAR</button>
-                                <a href="#" class="btn btn-register flex-fill">CADASTRAR</a>
-                            </div>
-                        </form>
-                    </div>
-                    </div>
+            <form action="../../backend/controllers/login.php" method="post" class="flex w-full flex-col items-center justify-center gap-4 px-5">
+                <div class="flex w-full flex-col items-start gap-[5px]">
+                    <label for="email" class="text-base font-bold">E-mail</label>
+                    <input type="email" id="email" name="email" autocomplete="email" required
+                        value="<?= htmlspecialchars($oldEmail) ?>"
+                        <?= $errorFor === 'email' ? 'aria-invalid="true" aria-describedby="email-error" autofocus' : '' ?>
+                        class="h-11 w-full rounded-[32px] border <?= $errorFor === 'email' ? 'border-red-400' : 'border-primary' ?> bg-transparent px-4 text-base outline-none focus:ring-2 focus:ring-secondary">
+                    <?php if ($errorFor === 'email'): ?>
+                        <p id="email-error" class="px-4 text-sm text-red-400"><?= htmlspecialchars($fieldError['message']) ?></p>
+                    <?php endif; ?>
                 </div>
-            </div>
-        </main>
 
-        <footer class="login-footer text-center small text-body-secondary mt-4">
-            © PoupaPig · Contato · Política de Privacidade
-        </footer>
-    </div>
+                <div class="flex w-full flex-col items-start gap-[5px]">
+                    <label for="password" class="text-base font-bold">Senha</label>
+                    <input type="password" id="password" name="password" autocomplete="current-password" required
+                        <?= $errorFor === 'password' ? 'aria-invalid="true" aria-describedby="password-error" autofocus' : '' ?>
+                        class="h-11 w-full rounded-[32px] border <?= $errorFor === 'password' ? 'border-red-400' : 'border-primary' ?> bg-transparent px-4 text-base outline-none focus:ring-2 focus:ring-secondary">
+                    <?php if ($errorFor === 'password'): ?>
+                        <p id="password-error" class="px-4 text-sm text-red-400"><?= htmlspecialchars($fieldError['message']) ?></p>
+                    <?php endif; ?>
+                </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+                <div class="flex w-full flex-col items-center justify-center gap-2.5 py-3">
+                    <button type="submit"
+                        class="h-11 w-36 cursor-pointer rounded-[48px] bg-secondary text-lg text-background transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-primary">
+                        Entrar
+                    </button>
+                    <a href="register.php" class="text-sm font-light hover:underline">Cadastre-se</a>
+                </div>
+            </form>
+
+            <a href="forgot-password.php" class="w-full text-right text-base font-extralight hover:underline">Esqueceu a senha?</a>
+        </section>
+
+        <?php include __DIR__ . '/../components/footer.php'; ?>
+    </main>
 </body>
 </html>

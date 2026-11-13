@@ -31,13 +31,16 @@ Pessoas que querem controlar melhor o próprio consumo por impulso — sem perfi
 
 - HTML5
 - CSS3
-- Bootstrap
+- Tailwind CSS
 - PHP
 - MySQL
 - phpMyAdmin
 - Git / GitHub
 - Figma
 - Trello
+
+## Documentação do projeto
+- [Project Exchange] (docs/PROJECT_EXCHANGE.md)
 
 ## Estrutura do projeto
 
