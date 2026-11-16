@@ -46,7 +46,7 @@ $swatchClass = 'group flex size-10 cursor-pointer items-center justify-center ro
                 Selecionar
             </button>
             <button type="button" aria-label="Cancelar" title="Cancelar" data-color-cancel
-                class="flex size-9 cursor-pointer items-center justify-center rounded-full bg-pink-200 transition hover:bg-pink-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                class="flex size-9 cursor-pointer items-center justify-center rounded-full bg-secondary-200 transition hover:bg-secondary-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                 <img src="../assets/icons/x.svg" alt="" width="16" height="16" class="size-4">
             </button>
         </div>

@@ -9,7 +9,7 @@ $actionHref = $actionHref ?? '';
 
     <?php if ($actionLabel && $actionHref): ?>
         <a href="<?= htmlspecialchars($actionHref) ?>"
-            class="flex shrink-0 items-center gap-2.5 rounded-[32px] bg-pink-200 px-4 py-2.5 text-base font-bold text-secondary transition hover:bg-pink-300 focus:outline-none focus:ring-2 focus:ring-secondary">
+            class="flex shrink-0 items-center gap-2.5 rounded-[32px] bg-secondary-200 px-4 py-2.5 text-base font-bold text-secondary transition hover:bg-secondary-300 focus:outline-none focus:ring-2 focus:ring-secondary">
             <img src="../assets/icons/plus.svg" alt="" width="20" height="20" class="size-5">
             <?= htmlspecialchars($actionLabel) ?>
         </a>

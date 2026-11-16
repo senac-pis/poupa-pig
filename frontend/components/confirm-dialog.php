@@ -32,7 +32,7 @@ $cancelUrl = htmlspecialchars('?' . http_build_query(array_diff_key($_GET, ['act
         <?php if ($blockedMessage): ?>
             <!-- Sem form: não tem o que enviar, o botão só fecha o modal como o Cancelar -->
             <a href="<?= $cancelUrl ?>" autofocus
-                class="flex h-11 w-36 items-center justify-center rounded-[48px] bg-secondary text-lg text-background transition hover:bg-pink-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                class="flex h-11 w-36 items-center justify-center rounded-[48px] bg-secondary text-lg text-background transition hover:brightness-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                 Entendi
             </a>
         <?php else: ?>

@@ -52,7 +52,7 @@ $formColor = in_array($formCategory['color'] ?? '', $categoryStyles['colors'], t
     include __DIR__ . '/../text-field.php';
     ?>
 
-    <button type="submit" class="h-11 w-36 cursor-pointer rounded-[48px] bg-secondary text-lg text-background transition hover:bg-pink-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+    <button type="submit" class="h-11 w-36 cursor-pointer rounded-[48px] bg-secondary text-lg text-background transition hover:brightness-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
         <?= htmlspecialchars($categoryForm['submitLabel']) ?>
     </button>
 </form>

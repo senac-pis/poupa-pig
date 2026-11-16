@@ -8,10 +8,10 @@ $periodMonths = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Ju
 // Anos do seletor: de 15 anos para a frente até 2000, do mais novo para o mais antigo (como no Figma)
 $periodYears = range((int) date('Y') + 15, 2000);
 
-$periodNavClass = 'cursor-pointer rounded-full p-1 hover:bg-pink-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary disabled:cursor-not-allowed disabled:opacity-30';
+$periodNavClass = 'cursor-pointer rounded-full p-1 hover:bg-secondary-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary disabled:cursor-not-allowed disabled:opacity-30';
 $periodToggleClass = 'flex cursor-pointer items-center gap-1.5 rounded-lg border border-gray-100 px-3 py-1 text-base font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary';
 $periodListClass = 'absolute left-0 top-full z-10 mt-1 max-h-44 overflow-y-auto rounded-lg bg-white-100 py-1 shadow-card';
-$periodOptionClass = 'group flex w-full cursor-pointer items-center justify-between gap-2 px-3 py-0.5 text-left text-sm hover:bg-pink-100 focus:outline-none focus-visible:bg-pink-100 aria-pressed:bg-pink-100';
+$periodOptionClass = 'group flex w-full cursor-pointer items-center justify-between gap-2 px-3 py-0.5 text-left text-sm hover:bg-secondary-100 focus:outline-none focus-visible:bg-secondary-100 aria-pressed:bg-secondary-100';
 ?>
 <div class="relative" data-date-period>
     <div class="flex gap-2.5">
@@ -86,7 +86,7 @@ $periodOptionClass = 'group flex w-full cursor-pointer items-center justify-betw
         <!-- Os dias entram pelo JS, porque mudam a cada mês -->
         <div class="grid grid-cols-7 gap-y-1" data-period-days></div>
 
-        <hr class="border-pink-100">
+        <hr class="border-secondary-100">
 
         <div class="flex items-center justify-between">
             <span class="text-sm text-black-300" data-period-picked></span>
@@ -96,7 +96,7 @@ $periodOptionClass = 'group flex w-full cursor-pointer items-center justify-betw
                     Concluir
                 </button>
                 <button type="button" aria-label="Cancelar" title="Cancelar" data-period-cancel
-                    class="flex size-9 cursor-pointer items-center justify-center rounded-full bg-pink-200 transition hover:bg-pink-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                    class="flex size-9 cursor-pointer items-center justify-center rounded-full bg-secondary-200 transition hover:bg-secondary-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                     <img src="../assets/icons/x.svg" alt="" width="16" height="16" class="size-4">
                 </button>
             </div>
@@ -175,9 +175,9 @@ $periodOptionClass = 'group flex w-full cursor-pointer items-center justify-betw
                     return 'bg-secondary text-white-100';
                 }
                 if (date.getMonth() !== month) {
-                    return 'text-gray-200 hover:bg-pink-100';
+                    return 'text-gray-200 hover:bg-secondary-100';
                 }
-                return 'hover:bg-pink-100';
+                return 'hover:bg-secondary-100';
             }
 
             function renderDays() {

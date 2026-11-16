@@ -21,7 +21,7 @@ if ($filtersEnabled) {
     $filterLabel = $activeFilters ? "Filtros ($activeFilters)" : 'Todos';
 }
 
-$filterButtonClass = 'flex cursor-pointer list-none items-center gap-2.5 rounded-[32px] bg-pink-200 px-4 py-2.5 text-base font-bold text-secondary transition hover:bg-pink-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary';
+$filterButtonClass = 'flex cursor-pointer list-none items-center gap-2.5 rounded-[32px] bg-secondary-200 px-4 py-2.5 text-base font-bold text-secondary transition hover:bg-secondary-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary';
 ?>
 <div class="flex items-center gap-2.5">
     <form method="get" role="search" class="flex flex-1 items-center gap-2.5 rounded-[32px] border border-primary bg-background px-4 py-2.5 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-secondary">

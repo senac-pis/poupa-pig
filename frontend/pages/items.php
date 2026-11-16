@@ -96,6 +96,7 @@ $totalItems = count($items);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Itens — Poupa Pig</title>
     <?php include __DIR__ . '/../components/theme.php'; ?>
+    <?php include __DIR__ . '/../components/accent-color.php'; ?>
 </head>
 <body class="flex gap-0.5 bg-background font-sans text-primary">
     <?php include __DIR__ . '/../components/notification.php'; ?>

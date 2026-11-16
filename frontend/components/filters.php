@@ -46,7 +46,7 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
     <?php endforeach; ?>
 
     <h2 class="text-2xl font-medium">Filtros</h2>
-    <hr class="border-pink-100">
+    <hr class="border-secondary-100">
 
     <details class="group/category">
         <summary class="<?= $summaryClass ?>">
@@ -69,7 +69,7 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
                     <input type="search" placeholder="Buscar categoria..." aria-label="Buscar categoria" data-category-search
                         class="w-full bg-transparent text-lg outline-none placeholder:text-gray-300">
                 </label>
-                <hr class="border-pink-100">
+                <hr class="border-secondary-100">
 
                 <div class="flex max-h-60 flex-col gap-2 overflow-y-auto px-6 text-lg">
                     <label class="<?= $optionClass ?>">
@@ -87,7 +87,7 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
             </div>
         </details>
     </details>
-    <hr class="border-pink-100">
+    <hr class="border-secondary-100">
 
     <div class="flex items-center justify-between">
         <span class="flex flex-col text-lg">
@@ -96,7 +96,7 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
         </span>
         <img src="../assets/icons/chevron-down.svg" alt="" width="24" height="24" class="size-6">
     </div>
-    <hr class="border-pink-100">
+    <hr class="border-secondary-100">
 
     <div class="flex items-center justify-between">
         <span class="flex flex-col text-lg">
@@ -105,7 +105,7 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
         </span>
         <img src="../assets/icons/chevron-down.svg" alt="" width="24" height="24" class="size-6">
     </div>
-    <hr class="border-pink-100">
+    <hr class="border-secondary-100">
 
     <!-- Fica aberto quando já tem data, para dar para escolher a outra sem reabrir -->
     <details class="group/period" <?= $period['start'] || $period['end'] ? 'open' : '' ?>>

@@ -20,7 +20,7 @@ foreach ($visiblePages as $page) {
 
 $linkClass = 'rounded px-1 hover:text-secondary focus:outline-none focus:ring-2 focus:ring-secondary';
 ?>
-<div class="grid w-full grid-cols-[1fr_auto_1fr] items-center rounded-lg border border-pink-400 bg-background p-3 text-xs font-bold">
+<div class="grid w-full grid-cols-[1fr_auto_1fr] items-center rounded-lg border border-secondary bg-background p-3 text-xs font-bold">
     <div class="flex items-center gap-2.5">
         <img src="../assets/icons/tags.svg" alt="" width="16" height="16" class="size-4">
         <span><?= (int) $shownItems ?> de <?= (int) $totalItems ?></span>
