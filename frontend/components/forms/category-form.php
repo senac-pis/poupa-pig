@@ -2,14 +2,12 @@
 /** @var array $categoryForm */
 // Antes do include: $categoryForm = ['action' => '<endpoint>', 'category' => $row ou null, 'submitLabel' => 'Criar']
 // 'category' null = Nova categoria; com o $row (mesmo formato da linha da tabela) = Editar
-// A cor ainda não tem seletor: a caixa só mostra a atual, e o backend usa o padrão ao criar
+// Sem ícone ou cor válidos, os seletores abrem sem nada marcado e o backend usa o padrão ao criar
 $categoryStyles ??= require __DIR__ . '/../../../backend/config/categories.php';
 
 $formCategory = $categoryForm['category'];
 $formIcon = in_array($formCategory['icon'] ?? '', $categoryStyles['icons'], true) ? $formCategory['icon'] : '';
 $formColor = in_array($formCategory['color'] ?? '', $categoryStyles['colors'], true) ? $formCategory['color'] : $categoryStyles['colors'][0];
-
-$pickerClass = 'flex w-40 flex-col items-center gap-2.5 rounded-2xl border border-primary p-4 text-base font-thin';
 ?>
 <form method="post" action="<?= htmlspecialchars($categoryForm['action']) ?>" class="flex flex-col gap-4">
     <?php if ($formCategory): ?>
@@ -23,12 +21,13 @@ $pickerClass = 'flex w-40 flex-col items-center gap-2.5 rounded-2xl border borde
             'label' => $formCategory ? 'Alterar ícone' : 'Selecionar ícone',
         ];
         include __DIR__ . '/../icon-picker.php';
+
+        $colorPicker = [
+            'value' => $formColor,
+            'label' => $formCategory ? 'Alterar cor' : 'Selecionar cor',
+        ];
+        include __DIR__ . '/../color-picker.php';
         ?>
-        <!-- Só visual por enquanto: o seletor de cor entra no próximo passo -->
-        <div class="<?= $pickerClass ?>">
-            <span class="size-12 rounded-2xl bg-<?= $formColor ?>-200"></span>
-            <span><?= $formCategory ? 'Alterar cor' : 'Selecionar cor' ?></span>
-        </div>
     </div>
 
     <?php

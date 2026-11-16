@@ -5,8 +5,10 @@
 // ['id', 'name', 'description', 'icon', 'color', 'item_count', 'item_percent']
 $categoryStyles ??= require __DIR__ . '/../../../backend/config/categories.php';
 
-// Cor da barra igual à do ícone; fora da lista, usa a padrão
+// Cor da barra: o tom mais escuro entre o fundo e o ícone (bar_tones); fora da lista, usa a padrão
 $rowColor = in_array($row['color'] ?? '', $categoryStyles['colors'], true) ? $row['color'] : $categoryStyles['colors'][0];
+[$rowFamily, $rowTone] = explode('-', $rowColor);
+$rowBarColor = "$rowFamily-" . $categoryStyles['bar_tones'][$rowTone];
 $rowPercent = min(max((int) $row['item_percent'], 0), 100);
 
 $cell = [
@@ -25,7 +27,7 @@ $rowActions = ['id' => $row['id'], 'name' => $row['name']];
             <span><?= $rowPercent ?>%</span>
             <!-- Só visual: o número acima já diz o percentual -->
             <div aria-hidden="true" class="h-1.5 rounded-full bg-white-300">
-                <div class="h-full rounded-full bg-<?= $rowColor ?>-400" style="width: <?= $rowPercent ?>%"></div>
+                <div class="h-full rounded-full bg-<?= $rowBarColor ?>" style="width: <?= $rowPercent ?>%"></div>
             </div>
         </div>
     </td>
