@@ -16,9 +16,9 @@ session_start();
 
 $activePage = '';
 
-// Dados fixos até o backend existir
+// O nome vem da sessão criada no login; a data da senha é fixa até o backend existir
 $user = [
-    'name' => 'Nome de usuário',
+    'name' => $_SESSION['user']['name'] ?? 'Usuário',
     'password_changed_at' => '2026-11-11',
 ];
 

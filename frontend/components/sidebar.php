@@ -33,7 +33,7 @@ $logoSize = 'small';
                 <img src="../assets/icons/person.svg" alt="" width="26" height="26" class="size-[26px]">
             </div>
             <div class="flex flex-col text-sm">
-                <span class="font-bold text-secondary">Usuário</span>
+                <span class="font-bold text-secondary"><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Usuário') ?></span>
                 <a href="settings.php" class="hover:underline">Configurações</a>
             </div>
         </div>
