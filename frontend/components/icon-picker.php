@@ -43,7 +43,7 @@ $pickerOptionClass = 'group flex size-9 cursor-pointer items-center justify-cent
             </button>
             <button type="button" aria-label="Cancelar" title="Cancelar" data-icon-cancel
                 class="flex size-9 cursor-pointer items-center justify-center rounded-full bg-secondary-200 transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-                <span class="size-4 shrink-0 bg-secondary" style="mask: url(../assets/icons/x.svg) center / contain no-repeat; -webkit-mask: url(../assets/icons/x.svg) center / contain no-repeat;"></span>
+                <span class="size-4 shrink-0 bg-secondary-strong" style="mask: url(../assets/icons/x.svg) center / contain no-repeat; -webkit-mask: url(../assets/icons/x.svg) center / contain no-repeat;"></span>
             </button>
         </div>
     </div>

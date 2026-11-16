@@ -24,12 +24,14 @@ foreach ($categoryStyles['color_groups'] as $accentLabel => $accentFamily) {
         if (!accentColors.includes(color)) {
             return;
         }
-        const family = color.split('-')[0];
+        const [family, tone] = color.split('-');
         const root = document.documentElement.style;
         root.setProperty('--color-secondary', `var(--color-${color})`);
-        ['100', '200', '300'].forEach((tone) => {
-            root.setProperty(`--color-secondary-${tone}`, `var(--color-${family}-${tone})`);
+        ['100', '200', '300'].forEach((shade) => {
+            root.setProperty(`--color-secondary-${shade}`, `var(--color-${family}-${shade})`);
         });
+        const strongTone = tone === '300' ? '500' : tone;
+        root.setProperty('--color-secondary-strong', `var(--color-${family}-${strongTone})`);
     }
 
     // O localStorage pode falhar (aba anônima, bloqueio); aí fica o rosa padrão

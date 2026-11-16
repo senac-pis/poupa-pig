@@ -79,6 +79,9 @@
         --color-secondary-100: var(--color-pink-100);
         --color-secondary-200: var(--color-pink-200);
         --color-secondary-300: var(--color-pink-300);
+        /* Texto e ícone dos botões claros (fundo secondary-200); o accent-color.php
+           troca o tom 300 pelo 500 da família, porque o 300 some no fundo 200 */
+        --color-secondary-strong: var(--color-pink-400);
         --color-background: var(--color-white-200); /* fundo e texto do botão */
 
         --font-sans: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;
