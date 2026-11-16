@@ -29,8 +29,8 @@ $items = [
         'status' => 'thinking',
         'category_id' => 1,
         'category_name' => 'Eletrônico',
-        'category_icon' => 'phone-vibrate',
-        'category_color' => 'sky',
+        'category_icon' => 'smartphone',
+        'category_color' => 'sky-200',
     ],
     [
         'id' => 6,
@@ -43,8 +43,8 @@ $items = [
         'status' => 'gave_up',
         'category_id' => 1,
         'category_name' => 'Eletrônico',
-        'category_icon' => 'phone-vibrate',
-        'category_color' => 'sky',
+        'category_icon' => 'smartphone',
+        'category_color' => 'sky-200',
     ],
     [
         'id' => 7,
@@ -57,8 +57,8 @@ $items = [
         'status' => 'bought',
         'category_id' => 2,
         'category_name' => 'Roupas',
-        'category_icon' => 'eyeglasses',
-        'category_color' => 'purple',
+        'category_icon' => 'apparel',
+        'category_color' => 'purple-200',
     ],
 ];
 $categories = [
