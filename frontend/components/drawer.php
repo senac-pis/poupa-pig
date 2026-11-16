@@ -22,7 +22,7 @@ $closeUrl = htmlspecialchars('?' . http_build_query(array_diff_key($_GET, ['acti
         <div class="flex items-center gap-4">
             <a href="<?= $closeUrl ?>" aria-label="Voltar" title="Voltar"
                 class="shrink-0 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary">
-                <img src="../assets/icons/arrow-left-circle-pink.svg" alt="" width="36" height="36" class="size-9">
+                <span class="block size-9 bg-secondary" style="mask: url(../assets/icons/arrow-left-circle-pink.svg) center / contain no-repeat; -webkit-mask: url(../assets/icons/arrow-left-circle-pink.svg) center / contain no-repeat;"></span>
             </a>
             <h2 id="drawer-title" class="text-[32px] font-bold text-secondary"><?= htmlspecialchars($drawerTitle) ?></h2>
         </div>

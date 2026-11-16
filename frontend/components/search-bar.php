@@ -21,7 +21,7 @@ if ($filtersEnabled) {
     $filterLabel = $activeFilters ? "Filtros ($activeFilters)" : 'Todos';
 }
 
-$filterButtonClass = 'flex cursor-pointer list-none items-center gap-2.5 rounded-[32px] bg-secondary-200 px-4 py-2.5 text-base font-bold text-secondary transition hover:bg-secondary-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary';
+$filterButtonClass = 'flex cursor-pointer list-none items-center gap-2.5 rounded-[32px] bg-secondary-200 px-4 py-2.5 text-base font-bold text-secondary transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary';
 ?>
 <div class="flex items-center gap-2.5">
     <form method="get" role="search" class="flex flex-1 items-center gap-2.5 rounded-[32px] border border-primary bg-background px-4 py-2.5 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-secondary">
@@ -41,7 +41,7 @@ $filterButtonClass = 'flex cursor-pointer list-none items-center gap-2.5 rounded
     <?php if ($filtersEnabled): ?>
         <details class="relative shrink-0">
             <summary class="<?= $filterButtonClass ?> [&::-webkit-details-marker]:hidden">
-                <img src="../assets/icons/filter.svg" alt="" width="20" height="20" class="size-5">
+                <span class="size-5 shrink-0 bg-secondary" style="mask: url(../assets/icons/filter.svg) center / contain no-repeat; -webkit-mask: url(../assets/icons/filter.svg) center / contain no-repeat;"></span>
                 <?= $filterLabel ?>
             </summary>
 
