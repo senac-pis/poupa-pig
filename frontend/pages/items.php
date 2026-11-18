@@ -5,89 +5,116 @@
  * Layout implementado a partir do Figma (Desktop - Light mode itens).
  *
  * Contrato com o backend:
- * - $items e $categories são fixos por enquanto; o backend troca pela consulta ao banco,
- *   já filtrada por ?search, ?category, ?start_date, ?end_date e ?page;
+ * - exige usuário logado (requireLogin) e lista só os itens dele;
+ * - $items e $categories vêm do banco (ItemModel), já filtrados por
+ *   ?search, ?category, ?start_date, ?end_date e ?page;
  * - cada item segue o formato descrito em components/rows/item-row.php;
  * - os forms enviam POST para backend/controllers/create-item.php, update-item.php e delete-item.php;
- * - depois de salvar, o backend volta para esta tela deixando a mensagem em $_SESSION['notification'].
+ * - depois de salvar, o backend volta para esta tela deixando a mensagem em $_SESSION['notification'];
+ *   num erro de formulário, volta em ?action=new ou ?action=edit&id=N com
+ *   $_SESSION['notification'] = ['type' => 'error', 'code' => ..., 'field' => ...] e
+ *   $_SESSION['old_input'] com o que foi digitado (nunca a foto).
  */
 
-session_start();
+require_once __DIR__ . '/../../backend/config/auth.php';
+
+$user = requireLogin('login.php');
+
+const ITEMS_PER_PAGE = 10;
 
 $activePage = 'items';
 
-// Dados fixos até o backend existir; para ver o estado vazio, troque por $items = [];
-$items = [
-    [
-        'id' => 5,
-        'name' => 'Ps5',
-        'image' => '',
-        'price' => 4000,
-        'link' => 'https://www.casasbahia.com.br',
-        'start_date' => '2026-09-11',
-        'end_date' => '2026-10-11',
-        'status' => 'thinking',
-        'category_id' => 1,
-        'category_name' => 'Eletrônico',
-        'category_icon' => 'phone-vibrate',
-        'category_color' => 'sky',
-    ],
-    [
-        'id' => 6,
-        'name' => 'Celular',
-        'image' => '',
-        'price' => 2000,
-        'link' => '',
-        'start_date' => '2026-09-05',
-        'end_date' => '2026-09-15',
-        'status' => 'gave_up',
-        'category_id' => 1,
-        'category_name' => 'Eletrônico',
-        'category_icon' => 'phone-vibrate',
-        'category_color' => 'sky',
-    ],
-    [
-        'id' => 7,
-        'name' => 'Blusa',
-        'image' => '',
-        'price' => 4000,
-        'link' => '',
-        'start_date' => '2026-09-04',
-        'end_date' => '2026-09-07',
-        'status' => 'bought',
-        'category_id' => 2,
-        'category_name' => 'Roupas',
-        'category_icon' => 'eyeglasses',
-        'category_color' => 'purple',
-    ],
-];
-$categories = [
-    ['id' => 1, 'name' => 'Eletrônico', 'count' => 2],
-    ['id' => 2, 'name' => 'Roupas', 'count' => 1],
-];
+/**
+ * Só aceita data real no formato do <input type="date">; senão ignora o filtro.
+ */
+function queryDate($value): ?string
+{
+    if (!is_string($value)) {
+        return null;
+    }
+    $date = DateTime::createFromFormat('!Y-m-d', $value);
+    return $date && $date->format('Y-m-d') === $value ? $value : null;
+}
+
+/**
+ * Ajusta o item do banco para o que os templates esperam:
+ * 'image' vira o caminho da foto a partir desta pasta (ou '' sem foto) e 'link' nunca é null.
+ */
+function prepareItemRow(array $row): array
+{
+    $row['image'] = !empty($row['image']) ? '../uploads/items/' . rawurlencode($row['image']) : '';
+    $row['link'] = (string) ($row['link'] ?? '');
+    return $row;
+}
+
+// Parâmetros da URL, todos validados
+$rawSearch = $_GET['search'] ?? '';
+$search = is_string($rawSearch) ? mb_substr(trim($rawSearch), 0, 100) : '';
+
+$rawCategory = $_GET['category'] ?? '';
+$categoryFilter = is_string($rawCategory) && ctype_digit($rawCategory) ? (int) $rawCategory : 0;
+
+$startDate = queryDate($_GET['start_date'] ?? '');
+$endDate = queryDate($_GET['end_date'] ?? '');
 
 // Drawer e modal abrem pela URL: ?action=new, ?action=edit&id=5 ou ?action=remove&id=5
 $action = $_GET['action'] ?? '';
 $rawId = $_GET['id'] ?? '';
 $itemId = is_string($rawId) && ctype_digit($rawId) ? (int) $rawId : 0;
 
-// Procura o item da URL na lista; se não existir, nada abre
+$rawPage = $_GET['page'] ?? '1';
+$requestedPage = is_string($rawPage) && ctype_digit($rawPage) ? max(1, (int) $rawPage) : 1;
+
+$items = [];
+$categories = [];
 $selectedItem = null;
-foreach ($items as $item) {
-    if ($item['id'] === $itemId) {
-        $selectedItem = $item;
+$totalItems = 0;
+$totalPages = 1;
+$currentPage = 1;
+
+try {
+    require_once __DIR__ . '/../../backend/config/connection.php';
+    require_once __DIR__ . '/../../backend/models/ItemModel.php';
+
+    $categories = listCategoriesWithCount($pdo, $user['id']);
+
+    // Categoria que não é do usuário não filtra nada
+    if (!in_array($categoryFilter, array_column($categories, 'id'), true)) {
+        $categoryFilter = 0;
     }
+
+    $filters = [
+        'search'      => $search,
+        'category_id' => $categoryFilter,
+        'start_date'  => $startDate,
+        'end_date'    => $endDate,
+    ];
+
+    $totalItems = countItems($pdo, $user['id'], $filters);
+    $totalPages = max(1, (int) ceil($totalItems / ITEMS_PER_PAGE));
+    $currentPage = min($requestedPage, $totalPages);
+
+    $items = array_map(
+        'prepareItemRow',
+        listItems($pdo, $user['id'], $filters, ITEMS_PER_PAGE, ($currentPage - 1) * ITEMS_PER_PAGE)
+    );
+
+    // Busca o item da URL direto no banco (ele pode estar em outra página da lista).
+    // Id inexistente ou de outro usuário: nada abre.
+    if (in_array($action, ['edit', 'remove'], true) && $itemId > 0) {
+        $found = findItemById($pdo, $itemId, $user['id']);
+        $selectedItem = $found ? prepareItemRow($found) : null;
+    }
+} catch (Throwable $e) {
+    // Detalhe interno só no log do servidor; a tela mostra o aviso genérico
+    error_log('[items] ' . $e->getMessage());
+    $_SESSION['notification'] = ['type' => 'error', 'code' => 'UNKNOWN_ERROR', 'field' => ''];
 }
 
 $showForm = $action === 'new' || ($action === 'edit' && $selectedItem);
 $showRemove = $action === 'remove' && $selectedItem;
 
-// Paginação: o backend vai devolver os totais; por enquanto é tudo uma página só
-$rawPage = $_GET['page'] ?? '1';
-$currentPage = is_string($rawPage) && ctype_digit($rawPage) ? (int) $rawPage : 1;
-$totalPages = 1;
 $shownItems = count($items);
-$totalItems = count($items);
 ?>
 <!doctype html>
 <html lang="pt-BR">
