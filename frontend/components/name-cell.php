@@ -22,8 +22,9 @@ $iconMask = "url(../assets/icons/$cellIcon.svg) center / contain no-repeat";
         </span>
     <?php endif; ?>
 
-    <span class="flex flex-col">
-        <span class="font-light"><?= htmlspecialchars($cell['name']) ?></span>
+    <span class="flex min-w-0 flex-col">
+        <!-- Nome longo corta com "..." e mostra o nome inteiro ao passar o mouse -->
+        <span class="max-w-60 truncate font-light" title="<?= htmlspecialchars($cell['name']) ?>"><?= htmlspecialchars($cell['name']) ?></span>
         <?php if ($cellDescription): ?>
             <span class="text-xs font-thin text-black-300"><?= htmlspecialchars($cellDescription) ?></span>
         <?php endif; ?>

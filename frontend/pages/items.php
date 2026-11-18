@@ -20,6 +20,10 @@ require_once __DIR__ . '/../../backend/config/auth.php';
 
 $user = requireLogin('login.php');
 
+// O que foi digitado antes de um erro de formulário: lê uma vez só e apaga, como no login
+$oldInput = $_SESSION['old_input'] ?? [];
+unset($_SESSION['old_input']);
+
 const ITEMS_PER_PAGE = 10;
 
 $activePage = 'items';
@@ -156,6 +160,9 @@ $shownItems = count($items);
             'item' => $isEdit ? $selectedItem : null,
             'categories' => $categories,
             'submitLabel' => $isEdit ? 'Salvar' : 'Criar',
+            'old' => $oldInput,
+            // $fieldError vem do notification.php, incluído no começo do <body>
+            'error' => $fieldError,
         ];
         $drawerTitle = $isEdit ? 'Editar item' : 'Novo item';
         $drawerTemplate = __DIR__ . '/../components/forms/item-form.php';
