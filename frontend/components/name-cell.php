@@ -1,12 +1,16 @@
 <?php
 /** @var array $cell */
-// Antes do include: $cell = ['name' => 'Ps5', 'description' => '', 'photo' => '', 'icon' => 'phone-vibrate', 'color' => 'sky']
+// Antes do include: $cell = ['name' => 'Ps5', 'description' => '', 'photo' => '', 'icon' => 'smartphone', 'color' => 'sky-200']
 // Monte o $cell de novo a cada linha, para não sobrar foto ou descrição da linha anterior
 $categoryStyles ??= require __DIR__ . '/../../backend/config/categories.php';
 
 // Ícone e cor vêm do banco: fora da lista, usa o primeiro (padrão)
 $cellIcon = in_array($cell['icon'] ?? '', $categoryStyles['icons'], true) ? $cell['icon'] : $categoryStyles['icons'][0];
 $cellColor = in_array($cell['color'] ?? '', $categoryStyles['colors'], true) ? $cell['color'] : $categoryStyles['colors'][0];
+// A cor é o fundo (ex.: purple-400); o tom do ícone sai do icon_tones (400 = branco)
+[$cellFamily, $cellTone] = explode('-', $cellColor);
+$cellIconTone = $categoryStyles['icon_tones'][$cellTone];
+$cellIconClass = $cellIconTone === 'white' ? 'bg-white-100' : "bg-$cellFamily-$cellIconTone";
 $cellPhoto = $cell['photo'] ?? '';
 $cellDescription = $cell['description'] ?? '';
 $iconMask = "url(../assets/icons/$cellIcon.svg) center / contain no-repeat";
@@ -16,9 +20,9 @@ $iconMask = "url(../assets/icons/$cellIcon.svg) center / contain no-repeat";
         <img src="<?= htmlspecialchars($cellPhoto) ?>" alt="" width="40" height="40" class="size-10 shrink-0 rounded-xl object-cover">
     <?php else: ?>
         <!-- O SVG vira máscara: o formato vem do ícone e a cor vem da classe -->
-        <!-- O Tailwind via CDN lê classes montadas na hora; se passar a compilar, pôr bg-*-200 e bg-*-400 numa safelist -->
-        <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-<?= $cellColor ?>-200">
-            <span class="size-8 bg-<?= $cellColor ?>-400" style="mask: <?= $iconMask ?>; -webkit-mask: <?= $iconMask ?>;"></span>
+        <!-- O Tailwind via CDN lê classes montadas na hora; se passar a compilar, pôr as bg-* das cores numa safelist -->
+        <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-<?= $cellColor ?>">
+            <span class="size-8 <?= $cellIconClass ?>" style="mask: <?= $iconMask ?>; -webkit-mask: <?= $iconMask ?>;"></span>
         </span>
     <?php endif; ?>
 

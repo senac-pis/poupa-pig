@@ -19,6 +19,11 @@ foreach (['start', 'end'] as $field) {
     $period[$field] = $date && $date->format('Y-m-d') === $value ? $date : null;
 }
 
+// Fim antes do Início não vale: o calendário já bloqueia, mas a URL pode vir montada na mão
+if ($period['start'] && $period['end'] && $period['end'] < $period['start']) {
+    $period['end'] = null;
+}
+
 if ($period['start'] && $period['end']) {
     $periodLabel = $period['start']->format('d/m/Y') . ' a ' . $period['end']->format('d/m/Y');
 } elseif ($period['start']) {
@@ -123,6 +128,13 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
             const form = document.currentScript.closest('form');
             const search = form.querySelector('[data-category-search]');
 
+            // Depois de aplicar um filtro, o painel volta aberto para dar para seguir filtrando
+            const panel = form.closest('details');
+            if (panel && sessionStorage.getItem('filtersOpen')) {
+                sessionStorage.removeItem('filtersOpen');
+                panel.open = true;
+            }
+
             // Aplica o filtro assim que algo muda (a busca não tem name, então não dispara)
             form.addEventListener('change', (event) => {
                 if (event.target.name) {
@@ -130,6 +142,8 @@ $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:c
                     form.querySelectorAll('[name]').forEach((field) => {
                         field.disabled = field.value === '';
                     });
+                    // Marca para o painel voltar aberto depois do reload
+                    sessionStorage.setItem('filtersOpen', '1');
                     form.submit();
                 }
             });
