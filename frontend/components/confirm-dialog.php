@@ -21,7 +21,8 @@ $cancelUrl = htmlspecialchars('?' . http_build_query(array_diff_key($_GET, ['act
     <!-- O conteúdo cobre o dialog todo: assim um clique que chega no próprio dialog só pode ter sido no fundo -->
     <div class="flex flex-col items-center gap-6 p-8 text-center">
         <h2 id="confirm-title" class="text-[28px] font-bold text-red-400"><?= htmlspecialchars($confirmDialog['title']) ?></h2>
-        <p class="text-xl font-light text-black-500">
+        <!-- Nome longo sem espaço quebra a linha em vez de vazar do modal -->
+        <p class="w-full break-words text-xl font-light text-black-500">
             <?php if ($blockedMessage): ?>
                 <?= htmlspecialchars($blockedMessage) ?>
             <?php else: ?>
