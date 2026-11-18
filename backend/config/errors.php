@@ -31,7 +31,7 @@ return [
         'status'  => 422,
         'message' => 'Sua senha precisa ter pelo menos 8 caracteres.',
     ],
-    // Login e cadastro: campo obrigatório vazio (cadastro informa o campo)
+    // Login, cadastro e itens: campo obrigatório vazio (cadastro e itens informam o campo)
     'REQUIRED_FIELD' => [
         'status'  => 422,
         'message' => 'Esse campo é obrigatório.',
@@ -41,10 +41,52 @@ return [
         'status'  => 500,
         'message' => 'Algo deu errado do nosso lado. Tenta de novo daqui a pouco.',
     ],
-    // Cadastro: nome com mais de 120 caracteres (limite da coluna users.name)
+    // Cadastro (nome com mais de 120 caracteres) e itens (nome com mais de 100)
     'INVALID_NAME' => [
         'status'  => 422,
-        'message' => 'Esse nome é muito longo. Use até 120 caracteres.',
+        'message' => 'Esse nome é muito longo. Tenta um nome mais curto.',
     ],
-    
+
+    // ---- Itens (mensagens provisórias, a revisar pelo Kaio) ----
+
+    // Itens: category_id que não existe ou que não é do usuário logado
+    'INVALID_CATEGORY' => [
+        'status'  => 422,
+        'message' => 'Essa categoria não existe. Escolhe uma da lista.',
+    ],
+    // Itens: valor que não é número, tem mais de 2 casas decimais ou não é maior que zero
+    'INVALID_PRICE' => [
+        'status'  => 422,
+        'message' => 'Esse valor não parece válido. Informe um preço maior que zero.',
+    ],
+    // Itens: link que não é uma URL http ou https, ou passa de 255 caracteres
+    'INVALID_URL' => [
+        'status'  => 422,
+        'message' => 'Esse link não parece válido. Ele precisa começar com http:// ou https://.',
+    ],
+    // Itens: data que não existe ou não está no formato AAAA-MM-DD
+    'INVALID_DATE' => [
+        'status'  => 422,
+        'message' => 'Essa data não parece válida. Dá uma olhadinha.',
+    ],
+    // Itens: data final antes da data de início
+    'INVALID_PERIOD' => [
+        'status'  => 422,
+        'message' => 'A data final não pode ser antes da data de início.',
+    ],
+    // Itens: arquivo que não é PNG ou JPG de verdade (o tipo é conferido pelo conteúdo)
+    'INVALID_IMAGE' => [
+        'status'  => 422,
+        'message' => 'Não consegui usar essa foto. Envie uma imagem PNG ou JPG.',
+    ],
+    // Itens: foto acima de 5 MB (ou acima do limite do PHP)
+    'IMAGE_TOO_LARGE' => [
+        'status'  => 413,
+        'message' => 'Essa foto é grande demais. O limite é 5 MB.',
+    ],
+    // Itens: id que não existe ou que é de outro usuário (os dois casos devolvem o mesmo)
+    'ITEM_NOT_FOUND' => [
+        'status'  => 404,
+        'message' => 'Não encontramos esse item.',
+    ],
 ];

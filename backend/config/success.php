@@ -12,4 +12,14 @@ return [
     'ACCOUNT_CREATED' => [
         'message' => 'Conta criada! Agora é só entrar.',
     ],
+    // Itens (mensagens provisórias, a revisar pelo Kaio)
+    'ITEM_CREATED' => [
+        'message' => 'Item criado!',
+    ],
+    'ITEM_UPDATED' => [
+        'message' => 'Item atualizado!',
+    ],
+    'ITEM_DELETED' => [
+        'message' => 'Item removido.',
+    ],
 ];
