@@ -32,13 +32,14 @@ if ($error !== null) {
     redirectItemsWithError($error['code'], $error['field'], $query, $input);
 }
 
-$image = inspectItemImage($_FILES['image'] ?? null);
-if ($image['error'] !== null) {
-    redirectItemsWithError($image['error']['code'], $image['error']['field'], $query, $input);
-}
-
 $savedImage = null;
 try {
+    // Dentro do try: se faltar algo no PHP (ex.: extensão fileinfo), vira UNKNOWN_ERROR
+    $image = inspectItemImage($_FILES['image'] ?? null);
+    if ($image['error'] !== null) {
+        redirectItemsWithError($image['error']['code'], $image['error']['field'], $query, $input);
+    }
+
     require_once __DIR__ . '/../config/connection.php';
     require_once __DIR__ . '/../models/ItemModel.php';
 

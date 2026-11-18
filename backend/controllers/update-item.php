@@ -20,6 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirectItems();
 }
 
+// Pedido acima do post_max_size chega sem $_POST (nem o id), então confere antes de ler o id.
+// Volta para a lista com o aviso no canto, já que não dá para reabrir o drawer sem o id.
+if (itemRequestTooLarge()) {
+    redirectItemsWithError('IMAGE_TOO_LARGE', '', '', []);
+}
+
 $rawId = $_POST['id'] ?? '';
 $itemId = is_string($rawId) && ctype_digit($rawId) ? (int) $rawId : 0;
 
@@ -29,10 +35,6 @@ if ($itemId <= 0) {
 
 $query = '?action=edit&id=' . $itemId;
 
-if (itemRequestTooLarge()) {
-    redirectItemsWithError('IMAGE_TOO_LARGE', 'image', $query, []);
-}
-
 $input = itemInputFromPost($_POST);
 
 $error = itemInputError($input);
@@ -40,14 +42,15 @@ if ($error !== null) {
     redirectItemsWithError($error['code'], $error['field'], $query, $input);
 }
 
-$image = inspectItemImage($_FILES['image'] ?? null);
-if ($image['error'] !== null) {
-    redirectItemsWithError($image['error']['code'], $image['error']['field'], $query, $input);
-}
-
 $savedImage = null;
 $oldImage = null;
 try {
+    // Dentro do try: se faltar algo no PHP (ex.: extensão fileinfo), vira UNKNOWN_ERROR
+    $image = inspectItemImage($_FILES['image'] ?? null);
+    if ($image['error'] !== null) {
+        redirectItemsWithError($image['error']['code'], $image['error']['field'], $query, $input);
+    }
+
     require_once __DIR__ . '/../config/connection.php';
     require_once __DIR__ . '/../models/ItemModel.php';
 

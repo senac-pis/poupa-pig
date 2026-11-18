@@ -15,8 +15,8 @@
  *
  * Recebe: $userId e $filters com as chaves opcionais:
  *   search (string), category_id (int), start_date e end_date (Y-m-d ou null).
- * O período pega os itens que se sobrepõem ao intervalo escolhido:
- *   end_date do item >= início do filtro e start_date do item <= fim do filtro.
+ * O período filtra pela data de inclusão (start_date do item):
+ *   start_date do item >= início do filtro e start_date do item <= fim do filtro.
  * Retorna: [string do WHERE, array de parâmetros nomeados].
  */
 function buildItemFilter(int $userId, array $filters): array
@@ -38,7 +38,7 @@ function buildItemFilter(int $userId, array $filters): array
     }
 
     if (!empty($filters['start_date'])) {
-        $where[] = 'i.end_date >= :filter_start';
+        $where[] = 'i.start_date >= :filter_start';
         $params[':filter_start'] = (string) $filters['start_date'];
     }
 

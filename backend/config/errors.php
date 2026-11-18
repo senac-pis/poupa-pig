@@ -44,25 +44,25 @@ return [
     // Cadastro (nome com mais de 120 caracteres) e itens (nome com mais de 100)
     'INVALID_NAME' => [
         'status'  => 422,
-        'message' => 'Esse nome é muito longo. Tenta um nome mais curto.',
+        'message' => 'Esse nome está muito longo. Tenta encurtar um pouco.',
     ],
 
-    // ---- Itens (mensagens provisórias, a revisar pelo Kaio) ----
+    // ---- Itens ----
 
     // Itens: category_id que não existe ou que não é do usuário logado
     'INVALID_CATEGORY' => [
         'status'  => 422,
-        'message' => 'Essa categoria não existe. Escolhe uma da lista.',
+        'message' => 'Escolha uma categoria da lista.',
     ],
     // Itens: valor que não é número, tem mais de 2 casas decimais ou não é maior que zero
     'INVALID_PRICE' => [
         'status'  => 422,
-        'message' => 'Esse valor não parece válido. Informe um preço maior que zero.',
+        'message' => 'Informe um valor maior que zero, com até 2 casas decimais.',
     ],
     // Itens: link que não é uma URL http ou https, ou passa de 255 caracteres
     'INVALID_URL' => [
         'status'  => 422,
-        'message' => 'Esse link não parece válido. Ele precisa começar com http:// ou https://.',
+        'message' => 'Informe o link completo, começando com http:// ou https://.',
     ],
     // Itens: data que não existe ou não está no formato AAAA-MM-DD
     'INVALID_DATE' => [
@@ -72,7 +72,7 @@ return [
     // Itens: data final antes da data de início
     'INVALID_PERIOD' => [
         'status'  => 422,
-        'message' => 'A data final não pode ser antes da data de início.',
+        'message' => 'A data final precisa ser igual ou depois da data de início.',
     ],
     // Itens: arquivo que não é PNG ou JPG de verdade (o tipo é conferido pelo conteúdo)
     'INVALID_IMAGE' => [
@@ -82,11 +82,11 @@ return [
     // Itens: foto acima de 5 MB (ou acima do limite do PHP)
     'IMAGE_TOO_LARGE' => [
         'status'  => 413,
-        'message' => 'Essa foto é grande demais. O limite é 5 MB.',
+        'message' => 'Essa foto passou de 5 MB. Escolha uma menor.',
     ],
     // Itens: id que não existe ou que é de outro usuário (os dois casos devolvem o mesmo)
     'ITEM_NOT_FOUND' => [
         'status'  => 404,
-        'message' => 'Não encontramos esse item.',
+        'message' => 'Não encontramos esse item. Talvez ele já tenha sido removido.',
     ],
 ];
