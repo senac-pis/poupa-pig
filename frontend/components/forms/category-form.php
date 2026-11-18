@@ -38,7 +38,7 @@ $formColor = in_array($formCategory['color'] ?? '', $categoryStyles['colors'], t
         'placeholder' => 'Informe o nome da categoria',
         'required' => true,
         'autofocus' => true,
-        'attributes' => ['maxlength' => '50'],
+        'attributes' => ['maxlength' => '120'],
     ];
     include __DIR__ . '/../text-field.php';
 
@@ -47,7 +47,6 @@ $formColor = in_array($formCategory['color'] ?? '', $categoryStyles['colors'], t
         'label' => 'Descrição',
         'value' => $formCategory['description'] ?? '',
         'placeholder' => 'Descreva a categoria',
-        'attributes' => ['maxlength' => '255'],
     ];
     include __DIR__ . '/../text-field.php';
     ?>
