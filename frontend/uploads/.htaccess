@@ -1,0 +1,8 @@
+# Pasta de fotos enviadas pelos usuários.
+# Camada extra de segurança: mesmo que um script chegue aqui, o Apache não executa
+# e não lista os arquivos da pasta.
+<FilesMatch "\.(php|phtml|phar)$">
+    Require all denied
+</FilesMatch>
+
+Options -Indexes
