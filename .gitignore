@@ -43,3 +43,9 @@ Desktop.ini
 # ==========================================================
 /vendor/
 /node_modules/
+
+
+# Fotos enviadas pelos usuários
+# A pasta vai no Git (vazia, com o .gitkeep); as fotos não
+frontend/uploads/items/*
+!frontend/uploads/items/.gitkeep

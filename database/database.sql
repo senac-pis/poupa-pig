@@ -42,33 +42,42 @@ CREATE TABLE IF NOT EXISTS users (
 -- CREATE TABLE ...
 -- ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY ...
 
--- poupa pig -- 
+-- poupa pig --
 
 
-create table if not exists category (
+create table if not exists categories (
     id int unsigned auto_increment primary key,
+    user_id int unsigned not null,
     name varchar(120) not null,
-    created_at timestamp not null default current_timestamp
+    icon varchar(50) not null default 'box-seam',
+    color varchar(50) not null default 'gray-200',
+    description text null,
+    created_at timestamp not null default current_timestamp,
+    constraint fk_categories_user
+        foreign key (user_id) references users(id)
+        on delete cascade
 );
 
 create table if not exists items (
     id int unsigned auto_increment primary key,
-    user_id int unsigned not null, 
-    category_id int unsigned not null, 
-    name varchar(180) not null, 
+    user_id int unsigned not null,
+    category_id int unsigned not null,
+    name varchar(180) not null,
     price decimal(10,2) not null,
-    link text, 
+    link text,
     image text,
     reason text,
-    thinking_deadline date not null, 
+    start_date date not null,
+    end_date date not null,
     status enum('thinking', 'bought', 'gave_up') not null default 'thinking',
     created_at timestamp not null default current_timestamp,
-    decided_at timestamp null default null, 
+    decided_at timestamp null default null,
     constraint fk_items_user
         foreign key (user_id) references users(id)
-        on delete cascade, 
+        on delete cascade,
     constraint fk_items_category
-        foreign key (category_id) references category(id)
+        foreign key (category_id) references categories(id)
         on delete restrict
 );
+
 
