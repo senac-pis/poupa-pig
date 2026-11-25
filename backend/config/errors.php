@@ -74,12 +74,12 @@ return [
         'status'  => 422,
         'message' => 'A data final precisa ser igual ou depois da data de início.',
     ],
-    // Itens: arquivo que não é PNG ou JPG de verdade (o tipo é conferido pelo conteúdo)
+    // Itens e foto do usuário: arquivo que não é PNG ou JPG de verdade (o tipo é conferido pelo conteúdo)
     'INVALID_IMAGE' => [
         'status'  => 422,
         'message' => 'Não consegui usar essa foto. Envie uma imagem PNG ou JPG.',
     ],
-    // Itens: foto acima de 5 MB (ou acima do limite do PHP)
+    // Itens e foto do usuário: foto acima de 5 MB (ou acima do limite do PHP)
     'IMAGE_TOO_LARGE' => [
         'status'  => 413,
         'message' => 'Essa foto passou de 5 MB. Escolha uma menor.',

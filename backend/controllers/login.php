@@ -68,9 +68,12 @@ try {
 
 // 5. Sucesso: renova o id da sessão e guarda só o necessário (nunca o hash).
 session_regenerate_id(true);
+// photo e accent_color vão junto porque a sidebar e a cor principal aparecem em todas as telas
 $_SESSION['user'] = [
-    'id'   => $user['id'],
-    'name' => $user['name'],
+    'id'           => $user['id'],
+    'name'         => $user['name'],
+    'photo'        => $user['photo'],
+    'accent_color' => $user['accent_color'],
 ];
 unset($_SESSION['old_input'], $_SESSION['notification']);
 

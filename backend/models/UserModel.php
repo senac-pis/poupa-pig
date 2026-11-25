@@ -13,14 +13,14 @@
  * Busca um usuário pelo email.
  *
  * Recebe: $pdo (conexão) e $email do usuário.
- * Retorna: array com id, name, email, password_hash e role,
- *          ou null se não existir nenhum usuário com esse email.
+ * Retorna: array com id, name, email, password_hash, role, photo e accent_color
+ *          (os dois últimos podem ser null), ou null se não existir nenhum usuário com esse email.
  * Lança: PDOException se o banco falhar.
  */
 function findUserByEmail(PDO $pdo, string $email): ?array
 {
     $stmt = $pdo->prepare(
-        'SELECT id, name, email, password_hash, role
+        'SELECT id, name, email, password_hash, role, photo, accent_color
          FROM users
          WHERE email = :email
          LIMIT 1'
@@ -63,15 +63,15 @@ function createUser(PDO $pdo, string $name, string $email, string $passwordHash)
  * Busca um usuário pelo id (para a tela de Configurações).
  *
  * Recebe: $pdo e $id do usuário (sempre o da sessão).
- * Retorna: array com id, name, password_hash e password_changed_days (dias desde a última
- *          troca de senha), ou null se o usuário não existir mais.
+ * Retorna: array com id, name, password_hash, photo, accent_color e password_changed_days
+ *          (dias desde a última troca de senha), ou null se o usuário não existir mais.
  *          Os dias são contados no próprio MySQL, para não depender do fuso do PHP.
  * Lança: PDOException se o banco falhar.
  */
 function findUserById(PDO $pdo, int $id): ?array
 {
     $stmt = $pdo->prepare(
-        'SELECT id, name, password_hash,
+        'SELECT id, name, password_hash, photo, accent_color,
                 DATEDIFF(CURRENT_DATE, DATE(password_changed_at)) AS password_changed_days
          FROM users
          WHERE id = :id
@@ -118,12 +118,36 @@ function updateUserPassword(PDO $pdo, int $id, string $passwordHash): void
 }
 
 /**
+ * Troca a foto do usuário.
+ *
+ * Recebe: $pdo, $id (da sessão) e $photo (nome do arquivo gerado pelo servidor).
+ * Lança: PDOException se o banco falhar.
+ */
+function updateUserPhoto(PDO $pdo, int $id, string $photo): void
+{
+    $stmt = $pdo->prepare('UPDATE users SET photo = :photo WHERE id = :id');
+    $stmt->execute([':photo' => $photo, ':id' => $id]);
+}
+
+/**
+ * Troca a cor principal do usuário.
+ *
+ * Recebe: $pdo, $id (da sessão) e $color já validada (ex.: 'green-400').
+ * Lança: PDOException se o banco falhar.
+ */
+function updateUserAccentColor(PDO $pdo, int $id, string $color): void
+{
+    $stmt = $pdo->prepare('UPDATE users SET accent_color = :color WHERE id = :id');
+    $stmt->execute([':color' => $color, ':id' => $id]);
+}
+
+/**
  * Exclui o usuário com os itens e as categorias dele, tudo ou nada (transação).
  *
  * Os itens saem antes das categorias, porque items.category_id é ON DELETE RESTRICT.
  * Recebe: $pdo e $id (da sessão).
- * Retorna: nomes das fotos dos itens apagados, para o controller apagar os arquivos
- *          só depois que o banco confirmou.
+ * Retorna: ['item_images' => nomes das fotos dos itens, 'photo' => foto do usuário ou null],
+ *          para o controller apagar os arquivos só depois que o banco confirmou.
  * Lança: PDOException se o banco falhar (nada é apagado nesse caso).
  */
 function deleteUserAccount(PDO $pdo, int $id): array
@@ -133,6 +157,10 @@ function deleteUserAccount(PDO $pdo, int $id): array
         $stmt = $pdo->prepare('SELECT image FROM items WHERE user_id = :id AND image IS NOT NULL');
         $stmt->execute([':id' => $id]);
         $images = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        $stmt = $pdo->prepare('SELECT photo FROM users WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        $photo = $stmt->fetchColumn();
 
         foreach (['items', 'categories'] as $table) {
             $stmt = $pdo->prepare("DELETE FROM $table WHERE user_id = :id");
@@ -148,5 +176,5 @@ function deleteUserAccount(PDO $pdo, int $id): array
         throw $e;
     }
 
-    return $images;
+    return ['item_images' => $images, 'photo' => is_string($photo) ? $photo : null];
 }
