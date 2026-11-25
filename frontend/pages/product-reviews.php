@@ -11,6 +11,7 @@
  * - $ratingSummary segue o formato descrito em components/reviews/rating-summary.php
  *   e conta todas as reviews do produto, sem paginação;
  * - cada review segue o formato descrito em components/reviews/review-card.php, paginada por ?page;
+ * - quem não tem o item só abre produto do catálogo ou que já tem review; os outros voltam para a lista;
  * - "Nova review" só aparece para quem tem um item com o nome do produto e ainda não avaliou;
  * - o modal envia POST para backend/controllers/create-review.php (product_id, rating e text);
  * - depois de salvar, o backend volta para esta tela deixando a mensagem em $_SESSION['notification'].
@@ -65,6 +66,13 @@ try {
 
     $product = $productId > 0 ? findProductById($pdo, $productId) : null;
 
+    // Quem não tem o item só vê produto do catálogo ou que já tem review;
+    // os outros contam como inexistentes (não revelam o nome do item de ninguém)
+    $hasItem = $product && userHasProductItem($pdo, $user['id'], $product['name']);
+    if ($product && !$hasItem && !productIsPublic($pdo, $product['id'])) {
+        $product = null;
+    }
+
     if ($product) {
         $ratingSummary = productRatingSummary($pdo, $product['id']);
 
@@ -77,8 +85,7 @@ try {
             listProductReviews($pdo, $product['id'], REVIEWS_PER_PAGE, ($currentPage - 1) * REVIEWS_PER_PAGE)
         );
 
-        $canReview = userHasProductItem($pdo, $user['id'], $product['name'])
-            && !userReviewedProduct($pdo, $user['id'], $product['id']);
+        $canReview = $hasItem && !userReviewedProduct($pdo, $user['id'], $product['id']);
     }
 } catch (Throwable $e) {
     // Detalhe interno só no log do servidor; volta para a lista com o aviso genérico

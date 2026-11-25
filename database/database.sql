@@ -88,9 +88,13 @@ create table if not exists items (
 -- Produtos de Reviews: compartilhados entre os usuários e identificados pelo nome do item.
 -- O UNIQUE usa a collation do banco (utf8mb4_unicode_ci), que não diferencia maiúsculas nem acentos:
 -- "Jaqueta Adidas" e "jaqueta adidas" são o mesmo produto. O backend junta os espaços antes de salvar.
+-- is_public marca o catálogo (database/seeds/products.sql): esses aparecem para todos no
+-- autocompletar do item. Produto criado a partir do item de alguém só fica visível para os outros
+-- depois da primeira review.
 create table if not exists products (
     id int unsigned auto_increment primary key,
     name varchar(180) not null,
+    is_public boolean not null default false,
     created_at timestamp not null default current_timestamp,
     constraint uq_products_name unique (name)
 );

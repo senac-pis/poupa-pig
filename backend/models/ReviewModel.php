@@ -198,6 +198,52 @@ function userHasProductItem(PDO $pdo, int $userId, string $productName): bool
 }
 
 /**
+ * Confere se o produto pode ser visto por quem não tem o item: é do catálogo (is_public)
+ * ou já tem pelo menos uma review (alguém publicou de propósito).
+ *
+ * Produto que só existe porque está nos itens de alguém não aparece para os outros:
+ * sem isso, trocar o ?id= na URL mostraria os nomes dos itens de outras pessoas.
+ * Lança: PDOException se o banco falhar.
+ */
+function productIsPublic(PDO $pdo, int $productId): bool
+{
+    $stmt = $pdo->prepare(
+        'SELECT 1 FROM products p
+         WHERE p.id = :id
+           AND (p.is_public OR EXISTS (SELECT 1 FROM reviews r WHERE r.product_id = p.id))
+         LIMIT 1'
+    );
+    $stmt->execute([':id' => $productId]);
+
+    return $stmt->fetchColumn() !== false;
+}
+
+/**
+ * Nomes sugeridos no autocompletar do nome do item (criar e editar).
+ *
+ * Só o que o usuário pode ver: o catálogo, os produtos que já têm review e os nomes dos
+ * itens dele. Item de outra pessoa sem review nunca aparece.
+ * Retorna: lista de nomes em ordem alfabética, sem repetir (a collation junta maiúsculas e acentos).
+ * Lança: PDOException se o banco falhar.
+ */
+function listProductSuggestions(PDO $pdo, int $userId): array
+{
+    $stmt = $pdo->prepare(
+        "SELECT p.name AS name
+         FROM products p
+         WHERE p.is_public OR EXISTS (SELECT 1 FROM reviews r WHERE r.product_id = p.id)
+         UNION
+         SELECT REGEXP_REPLACE(TRIM(i.name), '[[:space:]]+', ' ') AS name
+         FROM items i
+         WHERE i.user_id = :user_id
+         ORDER BY name"
+    );
+    $stmt->execute([':user_id' => $userId]);
+
+    return $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+/**
  * Confere se o usuário já avaliou o produto.
  * Lança: PDOException se o banco falhar.
  */

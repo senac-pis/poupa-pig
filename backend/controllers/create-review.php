@@ -40,6 +40,10 @@ try {
     }
 
     if (!userHasProductItem($pdo, $user['id'], $product['name'])) {
+        // Produto que a pessoa nem pode ver conta como inexistente, como na página do produto
+        if (!productIsPublic($pdo, $productId)) {
+            redirectProductReviewsWithError('PRODUCT_NOT_FOUND', 0);
+        }
         redirectProductReviewsWithError('REVIEW_NOT_ALLOWED', $productId);
     }
 
