@@ -36,7 +36,7 @@ $shownPending = array_slice($pendingItems, 0, 3);
                 <li class="flex items-center gap-3 py-2.5">
                     <div class="min-w-0 flex-1"><?php include __DIR__ . '/../name-cell.php'; ?></div>
                     <span class="shrink-0 rounded-full px-2.5 py-0.5 text-xs font-bold <?= $deadline['class'] ?>"><?= $deadline['text'] ?></span>
-                    <form method="post" class="flex shrink-0 gap-2">
+                    <form method="post" action="../../backend/controllers/decide-item.php" class="flex shrink-0 gap-2">
                         <input type="hidden" name="id" value="<?= (int) $item['id'] ?>">
                         <button type="submit" name="decision" value="bought"
                             class="cursor-pointer rounded-full border border-primary px-3 py-1 text-sm font-bold transition hover:bg-blue-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary">

@@ -5,73 +5,40 @@
  * Layout implementado a partir do Figma (Desktop - Light mode Dashboard, mês anterior e resumo do mês).
  *
  * Contrato com o backend:
- * - $items é fixo por enquanto; o backend troca pela consulta aos itens do usuário logado,
- *   com o mesmo formato de components/rows/item-row.php mais 'created_at' e 'decided_at' (Y-m-d ou null);
- * - todos os números da tela saem de $items pela monthStats(), então trocar a lista já basta;
- * - Comprei e Desisti enviam POST com id e decision ('bought' ou 'gave_up'); por enquanto a própria
- *   página guarda a decisão na sessão, depois o form passa a apontar para o controller do backend.
+ * - exige usuário logado (requireLogin); $items vem do banco (listDashboardItems), com todos os itens
+ *   do usuário no formato de components/rows/item-row.php mais 'created_at' (a data de inclusão,
+ *   start_date) e 'decided_at' (Y-m-d ou null);
+ * - todos os números da tela saem de $items pela monthStats();
+ * - Comprei e Desisti enviam POST para backend/controllers/decide-item.php com id e decision
+ *   ('bought' ou 'gave_up'); o backend volta para esta tela deixando a mensagem em $_SESSION['notification'];
+ * - o dia de hoje vem do banco (databaseToday), porque as datas de decisão são gravadas pelo MySQL.
  */
 
-session_start();
+require_once __DIR__ . '/../../backend/config/auth.php';
+
+$user = requireLogin('login.php');
 
 $activePage = 'dashboard';
 
-$today = new DateTime('today');
-$currentMonth = $today->format('Y-m');
 $monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
-// Dados fixos até o backend existir (de junho a novembro de 2026)
-$items = [
-    // Novembro: 8 desejos, 5 desistências, 1 compra e 2 pensando (70% cheio)
-    ['id' => 1, 'name' => 'Ventilador', 'price' => 159.9, 'created_at' => '2026-11-02', 'end_date' => '2026-11-17', 'decided_at' => '2026-11-17', 'status' => 'gave_up', 'category_name' => 'Casa', 'category_icon' => 'kitchen', 'category_color' => 'green-200'],
-    ['id' => 2, 'name' => 'Monitor', 'price' => 350, 'created_at' => '2026-11-01', 'end_date' => '2026-11-16', 'decided_at' => '2026-11-16', 'status' => 'bought', 'category_name' => 'Eletrônico', 'category_icon' => 'tv', 'category_color' => 'sky-200'],
-    ['id' => 3, 'name' => 'Jaqueta', 'price' => 289, 'created_at' => '2026-11-03', 'end_date' => '2026-11-12', 'decided_at' => '2026-11-12', 'status' => 'gave_up', 'category_name' => 'Moda', 'category_icon' => 'checkroom', 'category_color' => 'purple-200'],
-    ['id' => 4, 'name' => 'Smartwatch', 'price' => 899, 'created_at' => '2026-11-01', 'end_date' => '2026-11-10', 'decided_at' => '2026-11-10', 'status' => 'gave_up', 'category_name' => 'Eletrônico', 'category_icon' => 'watch', 'category_color' => 'sky-200'],
-    ['id' => 5, 'name' => 'Caixa de som', 'price' => 249, 'created_at' => '2026-11-04', 'end_date' => '2026-11-09', 'decided_at' => '2026-11-09', 'status' => 'gave_up', 'category_name' => 'Eletrônico', 'category_icon' => 'headphones', 'category_color' => 'sky-200'],
-    ['id' => 6, 'name' => 'Luminária', 'price' => 139.1, 'created_at' => '2026-11-05', 'end_date' => '2026-11-08', 'decided_at' => '2026-11-08', 'status' => 'gave_up', 'category_name' => 'Casa', 'category_icon' => 'table-lamp', 'category_color' => 'green-200'],
-    ['id' => 7, 'name' => 'Fone Bluetooth', 'price' => 249, 'created_at' => '2026-11-10', 'end_date' => '2026-11-18', 'decided_at' => null, 'status' => 'thinking', 'category_name' => 'Eletrônico', 'category_icon' => 'earbuds', 'category_color' => 'sky-200'],
-    ['id' => 8, 'name' => 'Tênis de corrida', 'price' => 145, 'created_at' => '2026-11-11', 'end_date' => '2026-11-20', 'decided_at' => null, 'status' => 'thinking', 'category_name' => 'Moda', 'category_icon' => 'apparel', 'category_color' => 'purple-200'],
-    // Outubro: 6 desejos, 5 desistências e 1 compra (82% cheio)
-    ['id' => 9, 'name' => 'Cadeira gamer', 'price' => 749, 'created_at' => '2026-10-02', 'end_date' => '2026-10-28', 'decided_at' => '2026-10-28', 'status' => 'gave_up', 'category_name' => 'Casa', 'category_icon' => 'chair', 'category_color' => 'green-200'],
-    ['id' => 10, 'name' => 'Mochila', 'price' => 351, 'created_at' => '2026-10-05', 'end_date' => '2026-10-21', 'decided_at' => '2026-10-21', 'status' => 'bought', 'category_name' => 'Moda', 'category_icon' => 'backpack', 'category_color' => 'purple-200'],
-    ['id' => 11, 'name' => 'Livro', 'price' => 90, 'created_at' => '2026-10-10', 'end_date' => '2026-10-18', 'decided_at' => '2026-10-18', 'status' => 'gave_up', 'category_name' => 'Casa', 'category_icon' => 'weekend', 'category_color' => 'green-200'],
-    ['id' => 12, 'name' => 'Perfume', 'price' => 320, 'created_at' => '2026-10-01', 'end_date' => '2026-10-15', 'decided_at' => '2026-10-15', 'status' => 'gave_up', 'category_name' => 'Beleza', 'category_icon' => 'diamond', 'category_color' => 'pink-200'],
-    ['id' => 13, 'name' => 'Tênis', 'price' => 280, 'created_at' => '2026-10-03', 'end_date' => '2026-10-09', 'decided_at' => '2026-10-09', 'status' => 'gave_up', 'category_name' => 'Moda', 'category_icon' => 'apparel', 'category_color' => 'purple-200'],
-    ['id' => 14, 'name' => 'Fone', 'price' => 160, 'created_at' => '2026-10-06', 'end_date' => '2026-10-08', 'decided_at' => '2026-10-08', 'status' => 'gave_up', 'category_name' => 'Eletrônico', 'category_icon' => 'headphones', 'category_color' => 'sky-200'],
-    // Setembro a junho: poucos itens, só para o gráfico e a navegação terem histórico
-    ['id' => 15, 'name' => 'Bicicleta', 'price' => 1200, 'created_at' => '2026-09-04', 'end_date' => '2026-09-20', 'decided_at' => '2026-09-20', 'status' => 'gave_up', 'category_name' => 'Esporte', 'category_icon' => 'sports-esports', 'category_color' => 'red-200'],
-    ['id' => 16, 'name' => 'Relógio', 'price' => 220, 'created_at' => '2026-09-08', 'end_date' => '2026-09-12', 'decided_at' => '2026-09-12', 'status' => 'bought', 'category_name' => 'Moda', 'category_icon' => 'watch', 'category_color' => 'purple-200'],
-    ['id' => 17, 'name' => 'Controle extra', 'price' => 389.9, 'created_at' => '2026-09-25', 'end_date' => '2026-11-23', 'decided_at' => null, 'status' => 'thinking', 'category_name' => 'Eletrônico', 'category_icon' => 'sports-esports', 'category_color' => 'sky-200'],
-    ['id' => 18, 'name' => 'Celular', 'price' => 2000, 'created_at' => '2026-08-02', 'end_date' => '2026-08-20', 'decided_at' => '2026-08-20', 'status' => 'gave_up', 'category_name' => 'Eletrônico', 'category_icon' => 'smartphone', 'category_color' => 'sky-200'],
-    ['id' => 19, 'name' => 'Mesa', 'price' => 450, 'created_at' => '2026-08-05', 'end_date' => '2026-08-15', 'decided_at' => '2026-08-15', 'status' => 'bought', 'category_name' => 'Casa', 'category_icon' => 'table-lamp', 'category_color' => 'green-200'],
-    ['id' => 20, 'name' => 'Videogame', 'price' => 2500, 'created_at' => '2026-07-01', 'end_date' => '2026-07-30', 'decided_at' => '2026-07-30', 'status' => 'gave_up', 'category_name' => 'Eletrônico', 'category_icon' => 'sports-esports', 'category_color' => 'sky-200'],
-    ['id' => 21, 'name' => 'Camisa', 'price' => 100, 'created_at' => '2026-07-10', 'end_date' => '2026-07-12', 'decided_at' => '2026-07-12', 'status' => 'bought', 'category_name' => 'Moda', 'category_icon' => 'apparel', 'category_color' => 'purple-200'],
-    ['id' => 22, 'name' => 'Sapato', 'price' => 80, 'created_at' => '2026-06-03', 'end_date' => '2026-06-20', 'decided_at' => '2026-06-20', 'status' => 'gave_up', 'category_name' => 'Moda', 'category_icon' => 'styler', 'category_color' => 'purple-200'],
-    ['id' => 23, 'name' => 'Blusa', 'price' => 320, 'created_at' => '2026-06-10', 'end_date' => '2026-06-15', 'decided_at' => '2026-06-15', 'status' => 'bought', 'category_name' => 'Moda', 'category_icon' => 'checkroom', 'category_color' => 'purple-200'],
-];
+// Sem o banco, a tela abre vazia no mês do relógio do PHP
+$items = [];
+$today = new DateTime('today');
 
-// Comprei / Desisti: valida, guarda na sessão e volta para a mesma URL (um F5 não reenvia o form)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $rawDecisionId = $_POST['id'] ?? '';
-    $decision = $_POST['decision'] ?? '';
-    $isValidDecision = is_string($rawDecisionId) && ctype_digit($rawDecisionId) && in_array($decision, ['bought', 'gave_up'], true);
+try {
+    require_once __DIR__ . '/../../backend/config/connection.php';
+    require_once __DIR__ . '/../../backend/models/ItemModel.php';
 
-    if ($isValidDecision) {
-        $_SESSION['dashboard_decisions'][(int) $rawDecisionId] = $decision;
-    }
-
-    header('Location: ' . $_SERVER['REQUEST_URI']);
-    exit;
+    $today = DateTime::createFromFormat('!Y-m-d', databaseToday($pdo)) ?: $today;
+    $items = listDashboardItems($pdo, $user['id']);
+} catch (Throwable $e) {
+    // Detalhe interno só no log do servidor; a tela mostra o aviso genérico
+    error_log('[dashboard] ' . $e->getMessage());
+    $_SESSION['notification'] = ['type' => 'error', 'code' => 'UNKNOWN_ERROR', 'field' => ''];
 }
 
-// Aplica as decisões da sessão nos itens que ainda estavam pensando
-$sessionDecisions = $_SESSION['dashboard_decisions'] ?? [];
-foreach ($items as $index => $item) {
-    if ($item['status'] === 'thinking' && isset($sessionDecisions[$item['id']])) {
-        $items[$index]['status'] = $sessionDecisions[$item['id']];
-        $items[$index]['decided_at'] = $today->format('Y-m-d');
-    }
-}
+$currentMonth = $today->format('Y-m');
 
 // Mês pela URL: ?month=2026-10; inválido, antes de 2000 ou no futuro abre o mês atual
 $rawMonth = $_GET['month'] ?? '';

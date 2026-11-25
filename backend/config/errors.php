@@ -84,7 +84,7 @@ return [
         'status'  => 413,
         'message' => 'Essa foto passou de 5 MB. Escolha uma menor.',
     ],
-    // Itens: id que não existe ou que é de outro usuário (os dois casos devolvem o mesmo)
+    // Itens e Dashboard: id que não existe ou que é de outro usuário (os dois casos devolvem o mesmo)
     'ITEM_NOT_FOUND' => [
         'status'  => 404,
         'message' => 'Não encontramos esse item. Talvez ele já tenha sido removido.',
@@ -129,5 +129,18 @@ return [
     'PASSWORD_MISMATCH' => [
         'status'  => 422,
         'message' => 'As senhas não são iguais.',
+    ],
+
+    // ---- Dashboard ----
+
+    // Comprei/Desisti: decisão que não é 'bought' nem 'gave_up'
+    'INVALID_DECISION' => [
+        'status'  => 422,
+        'message' => 'Escolha entre Comprei e Desisti.',
+    ],
+    // Comprei/Desisti: item que já tinha sido decidido
+    'ITEM_ALREADY_DECIDED' => [
+        'status'  => 409,
+        'message' => 'Esse item já foi decidido.',
     ],
 ];

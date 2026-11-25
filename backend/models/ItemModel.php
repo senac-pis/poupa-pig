@@ -271,3 +271,63 @@ function deleteItem(PDO $pdo, int $id, int $userId): void
     $stmt = $pdo->prepare('DELETE FROM items WHERE id = :id AND user_id = :user_id');
     $stmt->execute([':id' => $id, ':user_id' => $userId]);
 }
+/**
+ * Lista todos os itens do usuário para o Dashboard, com a categoria (JOIN).
+ *
+ * O Dashboard calcula os números de qualquer mês a partir dessa lista, por isso vem tudo.
+ * Recebe: $pdo e $userId.
+ * Retorna: array no formato da listItems, com price em float e mais:
+ *          created_at = start_date (a "Data de inclusão" que a pessoa escolhe no item) e
+ *          decided_at = dia da decisão (Y-m-d) ou null enquanto o item está pensando.
+ * Lança: PDOException se o banco falhar.
+ */
+function listDashboardItems(PDO $pdo, int $userId): array
+{
+    $stmt = $pdo->prepare(
+        'SELECT i.id, i.name, i.image, i.price, i.link, i.start_date, i.end_date, i.status, i.category_id,
+                c.name AS category_name, c.icon AS category_icon, c.color AS category_color,
+                i.start_date AS created_at, DATE(i.decided_at) AS decided_at
+         FROM items i
+         JOIN categories c ON c.id = i.category_id
+         WHERE i.user_id = :user_id
+         ORDER BY i.start_date DESC, i.id DESC'
+    );
+    $stmt->execute([':user_id' => $userId]);
+
+    return array_map(
+        fn(array $row): array => array_merge(normalizeItemRow($row), ['price' => (float) $row['price']]),
+        $stmt->fetchAll(PDO::FETCH_ASSOC)
+    );
+}
+
+/**
+ * Grava a decisão de um item que ainda está pensando (Comprei ou Desisti do Dashboard).
+ *
+ * Recebe: $pdo, $id, $userId (dono) e $status ('bought' ou 'gave_up', já validado).
+ * Retorna: true se gravou; false se o item não é do usuário ou já tinha sido decidido
+ *          (o WHERE com status = 'thinking' impede decidir duas vezes, mesmo com dois cliques).
+ * Lança: PDOException se o banco falhar.
+ */
+function decideItem(PDO $pdo, int $id, int $userId, string $status): bool
+{
+    $stmt = $pdo->prepare(
+        "UPDATE items
+         SET status = :status, decided_at = CURRENT_TIMESTAMP
+         WHERE id = :id AND user_id = :user_id AND status = 'thinking'"
+    );
+    $stmt->execute([':status' => $status, ':id' => $id, ':user_id' => $userId]);
+
+    return $stmt->rowCount() > 0;
+}
+
+/**
+ * Dia de hoje segundo o banco (Y-m-d).
+ *
+ * O Dashboard usa este dia em vez do relógio do PHP: o PHP local roda em UTC e o MySQL no
+ * fuso do sistema, e as datas de decisão são gravadas pelo MySQL.
+ * Lança: PDOException se o banco falhar.
+ */
+function databaseToday(PDO $pdo): string
+{
+    return (string) $pdo->query('SELECT CURRENT_DATE')->fetchColumn();
+}

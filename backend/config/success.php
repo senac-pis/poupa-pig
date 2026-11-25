@@ -45,4 +45,11 @@ return [
     'ACCOUNT_DELETED' => [
         'message' => 'Sua conta foi excluída. Até a próxima!',
     ],
+    // Dashboard: Comprei e Desisti
+    'ITEM_GAVE_UP' => [
+        'message' => 'Boa! Seu porquinho agradece.',
+    ],
+    'ITEM_BOUGHT' => [
+        'message' => 'Compra registrada.',
+    ],
 ];
