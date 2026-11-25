@@ -22,4 +22,14 @@ return [
     'ITEM_DELETED' => [
         'message' => 'Item removido.',
     ],
+    // Categorias: categoria criada, editada e removida
+    'CATEGORY_CREATED' => [
+        'message' => 'Categoria adicionada!',
+    ],
+    'CATEGORY_UPDATED' => [
+        'message' => 'Categoria atualizada!',
+    ],
+    'CATEGORY_DELETED' => [
+        'message' => 'Categoria removida.',
+    ],
 ];
