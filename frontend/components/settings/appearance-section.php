@@ -1,8 +1,9 @@
 <?php
 /** @var array $categoryStyles */
 // Seção Aparência da tela de Configurações (pages/settings.php)
-// $categoryStyles e applyAccentColor() vêm do accent-color.php, incluído no <head>
-// Clicar numa cor já aplica e salva no navegador, sem botão de salvar (como no Figma)
+// $categoryStyles, applyAccentColor() e userAccentColor vêm do accent-color.php, incluído no <head>
+// Clicar numa cor já aplica e salva no usuário (fetch para o update-accent-color.php),
+// sem botão de salvar (como no Figma). Se o servidor recusar, volta para a cor anterior
 $themeModes = [
     'light' => ['label' => 'Claro', 'icon' => 'brightness-alt-high'],
     'dark' => ['label' => 'Escuro', 'icon' => 'brightness-alt-low'],
@@ -25,6 +26,8 @@ $swatchClass = 'group flex size-10 cursor-pointer items-center justify-center ro
             </button>
         <?php endforeach; ?>
     </div>
+
+    <p hidden role="alert" class="text-sm text-red-400" data-accent-error>Não foi possível salvar a cor. Tenta de novo.</p>
 
     <div class="flex flex-col gap-4" role="group" aria-label="Cor principal">
         <?php foreach ($categoryStyles['color_groups'] as $swatchLabel => $swatchFamily): ?>
@@ -51,6 +54,7 @@ $swatchClass = 'group flex size-10 cursor-pointer items-center justify-center ro
         {
             const picker = document.currentScript.closest('[data-accent-picker]');
             const options = [...picker.querySelectorAll('[data-accent-color]')];
+            const errorMessage = picker.querySelector('[data-accent-error]');
 
             function mark(color) {
                 options.forEach((option) => {
@@ -58,21 +62,37 @@ $swatchClass = 'group flex size-10 cursor-pointer items-center justify-center ro
                 });
             }
 
-            // Sem cor salva (ou com valor inválido), o marcado é o rosa padrão do tema
-            let saved = null;
-            try {
-                saved = localStorage.getItem('accent-color');
-            } catch {}
-            mark(accentColors.includes(saved) ? saved : 'pink-400');
+            // Sem cor salva, o marcado é o rosa padrão do tema
+            let current = userAccentColor ?? 'pink-400';
+            mark(current);
+
+            async function save(color) {
+                const body = new FormData();
+                body.append('accent_color', color);
+                try {
+                    const response = await fetch('../../backend/controllers/update-accent-color.php', { method: 'POST', body });
+                    return response.status === 204;
+                } catch {
+                    return false;
+                }
+            }
 
             options.forEach((option) => {
-                option.addEventListener('click', () => {
+                option.addEventListener('click', async () => {
+                    const previous = current;
                     const color = option.dataset.accentColor;
+                    // Aplica na hora; o servidor confirma em seguida
+                    current = color;
                     applyAccentColor(color);
                     mark(color);
-                    try {
-                        localStorage.setItem('accent-color', color);
-                    } catch {}
+                    errorMessage.hidden = true;
+
+                    if (!(await save(color))) {
+                        current = previous;
+                        applyAccentColor(previous);
+                        mark(previous);
+                        errorMessage.hidden = false;
+                    }
                 });
             });
         }

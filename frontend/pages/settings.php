@@ -5,15 +5,16 @@
  * Layout implementado a partir do Figma (Desktop - Light mode configuração).
  *
  * Contrato com o backend:
- * - exige usuário logado (requireLogin); $user vem do banco (UserModel) com name e password_changed_days;
+ * - exige usuário logado (requireLogin); $user vem do banco (UserModel) com name, photo
+ *   (caminho pronto ou '') e password_changed_days;
  * - os forms enviam POST para backend/controllers/update-account.php, update-password.php
- *   e delete-account.php;
+ *   update-photo.php e delete-account.php; a cor vai por fetch para update-accent-color.php;
  * - depois de salvar, o backend volta para esta tela deixando a mensagem em $_SESSION['notification'];
- *   erro de campo volta com 'field' (name, current_password, new_password ou confirm_password).
- * A cor principal fica salva no navegador por enquanto (components/accent-color.php).
+ *   erro de campo volta com 'field' (name, photo, current_password, new_password ou confirm_password).
  */
 
 require_once __DIR__ . '/../../backend/config/auth.php';
+require_once __DIR__ . '/../../backend/services/AccountService.php';
 
 $sessionUser = requireLogin('login.php');
 
@@ -22,6 +23,7 @@ $activePage = '';
 // Sem o banco, a tela abre com o nome da sessão e sem a data da senha
 $user = [
     'name' => $sessionUser['name'],
+    'photo' => userPhotoUrl($_SESSION['user']['photo'] ?? null),
     'password_changed_days' => null,
 ];
 
@@ -33,8 +35,13 @@ try {
     if ($dbUser !== null) {
         $user = [
             'name' => $dbUser['name'],
+            'photo' => userPhotoUrl($dbUser['photo']),
             'password_changed_days' => $dbUser['password_changed_days'],
         ];
+        // Mantém a sessão igual ao banco (a sidebar e a cor principal leem da sessão)
+        $_SESSION['user']['name'] = $dbUser['name'];
+        $_SESSION['user']['photo'] = $dbUser['photo'];
+        $_SESSION['user']['accent_color'] = $dbUser['accent_color'];
     }
 } catch (Throwable $e) {
     // Detalhe interno só no log do servidor; a tela mostra o aviso genérico

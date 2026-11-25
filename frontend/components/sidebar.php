@@ -8,6 +8,10 @@ $menuItems = [
 ];
 $activePage = $activePage ?? '';
 $logoSize = 'small';
+
+// Foto do usuário logado (guardada na sessão pelo login e pela troca de foto); sem foto, o ícone
+require_once __DIR__ . '/../../backend/services/AccountService.php';
+$sidebarPhoto = userPhotoUrl($_SESSION['user']['photo'] ?? null);
 ?>
 <aside class="sticky top-0 flex h-screen w-[240px] shrink-0 flex-col items-center overflow-y-auto rounded-2xl border border-black-200 bg-background py-6">
     <div class="flex w-full flex-col items-center gap-2.5">
@@ -29,8 +33,12 @@ $logoSize = 'small';
         </ul>
 
         <div class="flex items-center gap-2.5 px-5">
-            <div class="flex size-12 shrink-0 items-center justify-center rounded-full bg-gray-100">
-                <img src="../assets/icons/person.svg" alt="" width="26" height="26" class="size-[26px]">
+            <div class="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
+                <?php if ($sidebarPhoto): ?>
+                    <img src="<?= htmlspecialchars($sidebarPhoto) ?>" alt="" width="48" height="48" class="size-full object-cover">
+                <?php else: ?>
+                    <img src="../assets/icons/person.svg" alt="" width="26" height="26" class="size-[26px]">
+                <?php endif; ?>
             </div>
             <div class="flex flex-col text-sm">
                 <span class="font-bold text-secondary"><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Usuário') ?></span>
