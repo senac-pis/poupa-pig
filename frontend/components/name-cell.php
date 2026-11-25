@@ -30,7 +30,7 @@ $iconMask = "url(../assets/icons/$cellIcon.svg) center / contain no-repeat";
         <!-- Nome longo corta com "..." e mostra o nome inteiro ao passar o mouse -->
         <span class="max-w-60 truncate font-light" title="<?= htmlspecialchars($cell['name']) ?>"><?= htmlspecialchars($cell['name']) ?></span>
         <?php if ($cellDescription): ?>
-            <span class="text-xs font-thin text-black-300"><?= htmlspecialchars($cellDescription) ?></span>
+            <span class="max-w-60 truncate text-xs font-thin text-black-300" title="<?= htmlspecialchars($cellDescription) ?>"><?= htmlspecialchars($cellDescription) ?></span>
         <?php endif; ?>
     </span>
 </div>

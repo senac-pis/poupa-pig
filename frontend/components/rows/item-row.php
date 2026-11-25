@@ -27,7 +27,8 @@ $rowActions = ['id' => $row['id'], 'name' => $row['name']];
 ?>
 <tr>
     <td><?php include __DIR__ . '/../name-cell.php'; ?></td>
-    <td><?= htmlspecialchars($row['category_name']) ?></td>
+    <!-- Categoria longa corta com "..." e mostra o nome inteiro ao passar o mouse -->
+    <td><span class="block max-w-40 truncate" title="<?= htmlspecialchars($row['category_name']) ?>"><?= htmlspecialchars($row['category_name']) ?></span></td>
     <td>R$ <?= number_format((float) $row['price'], 2, ',', '.') ?></td>
     <td><?= $rowDates['start_date'] ?></td>
     <td><?= $rowDates['end_date'] ?></td>
