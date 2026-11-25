@@ -5,29 +5,61 @@
  * Aqui ficam só as queries, sem regra de negócio.
  * Validação e erros do mapa ficam com o controller e o ReviewService.
  *
- * Os produtos são compartilhados: todo usuário logado vê os produtos e as reviews de todos.
- * O que é de cada um é a review: só o dono do item pode avaliar, uma vez por produto.
+ * Os produtos são compartilhados: as reviews de um produto são de todos os usuários.
+ * A lista de Reviews mostra os produtos dos itens de cada um, e só o dono do item avalia,
+ * uma vez por produto.
  * O produto é o nome do item, comparado pela collation do banco (sem diferenciar maiúsculas
  * nem acentos) e com os espaços juntados (normalizeProductName, no ReviewService).
  * Em caso de falha do banco, a exceção sobe para quem chamou tratar.
  */
 
 /**
- * Monta o HAVING/WHERE da lista de produtos avaliados (mesmos filtros na lista e na contagem).
+ * Garante que cada item do usuário tenha o seu produto (o nome do item com os espaços juntados).
  *
- * Recebe: $search (busca pelo nome; '' = sem busca) e $rating (1 a 5; 0 = todas).
- * A nota filtra pela média arredondada: 4 pega de 3,5 até antes de 4,5.
+ * Roda antes da lista de Reviews: assim os itens que já existiam, ou que foram renomeados,
+ * aparecem na lista sem precisar passar pelo "Avaliar".
+ * Só tenta inserir os nomes que ainda não são produto: o InnoDB gasta um número do
+ * AUTO_INCREMENT a cada tentativa, mesmo quando o UNIQUE recusa, e sem esse filtro os ids
+ * pulariam a cada vez que a lista abre. O ON DUPLICATE KEY fica para dois pedidos ao mesmo tempo.
+ * Lança: PDOException se o banco falhar.
+ */
+function syncUserProducts(PDO $pdo, int $userId): void
+{
+    $stmt = $pdo->prepare(
+        "INSERT INTO products (name)
+         SELECT DISTINCT REGEXP_REPLACE(TRIM(i.name), '[[:space:]]+', ' ') AS product_name
+         FROM items i
+         WHERE i.user_id = :user_id
+           AND NOT EXISTS (
+               SELECT 1 FROM products p
+               WHERE p.name = REGEXP_REPLACE(TRIM(i.name), '[[:space:]]+', ' ')
+           )
+         ON DUPLICATE KEY UPDATE name = products.name"
+    );
+    $stmt->execute([':user_id' => $userId]);
+}
+
+/**
+ * Monta o WHERE/HAVING da lista de Reviews (mesmos filtros na lista e na contagem).
+ *
+ * A lista mostra os produtos que estão nos itens do usuário, com ou sem review:
+ * é por ela que a pessoa chega na página do produto para avaliar.
+ * Recebe: $userId, $search (busca pelo nome; '' = sem busca) e $rating (1 a 5; 0 = todas).
+ * A nota filtra pela média arredondada: 4 pega de 3,5 até antes de 4,5 (produto sem review não entra).
  * Retorna: [WHERE, HAVING, parâmetros nomeados].
  */
-function buildProductFilter(string $search, int $rating): array
+function buildProductFilter(int $userId, string $search, int $rating): array
 {
-    $where = '1 = 1';
+    $where = "EXISTS (
+        SELECT 1 FROM items i
+        WHERE i.user_id = :user_id AND REGEXP_REPLACE(TRIM(i.name), '[[:space:]]+', ' ') = p.name
+    )";
     $having = '1 = 1';
-    $params = [];
+    $params = [':user_id' => $userId];
 
     if ($search !== '') {
         // Escapa % e _ para a busca tratar como texto comum
-        $where = 'p.name LIKE :search';
+        $where .= ' AND p.name LIKE :search';
         $params[':search'] = '%' . addcslashes($search, '%_\\') . '%';
     }
 
@@ -50,22 +82,22 @@ function bindReviewParams(PDOStatement $stmt, array $params): void
 }
 
 /**
- * Lista os produtos que têm pelo menos uma review, filtrados e paginados.
+ * Lista os produtos dos itens do usuário, com as reviews de todos os usuários, filtrados e paginados.
  *
- * Recebe: $pdo, $search, $rating (ver buildProductFilter), $limit e $offset.
- * Retorna: array de ['id', 'name', 'user_count', 'review_count', 'average' (float)],
- *          do produto com mais reviews para o com menos.
+ * Recebe: $pdo, $userId, $search, $rating (ver buildProductFilter), $limit e $offset.
+ * Retorna: array de ['id', 'name', 'user_count', 'review_count', 'average' (float, 0 sem review)],
+ *          do produto com mais reviews para o com menos, e por nome no empate.
  * Lança: PDOException se o banco falhar.
  */
-function listReviewedProducts(PDO $pdo, string $search, int $rating, int $limit, int $offset): array
+function listUserProducts(PDO $pdo, int $userId, string $search, int $rating, int $limit, int $offset): array
 {
-    [$where, $having, $params] = buildProductFilter($search, $rating);
+    [$where, $having, $params] = buildProductFilter($userId, $search, $rating);
 
     $stmt = $pdo->prepare(
         'SELECT p.id, p.name, COUNT(DISTINCT r.user_id) AS user_count, COUNT(r.id) AS review_count,
-                AVG(r.rating) AS average
+                COALESCE(AVG(r.rating), 0) AS average
          FROM products p
-         JOIN reviews r ON r.product_id = p.id
+         LEFT JOIN reviews r ON r.product_id = p.id
          WHERE ' . $where . '
          GROUP BY p.id, p.name
          HAVING ' . $having . '
@@ -90,22 +122,22 @@ function listReviewedProducts(PDO $pdo, string $search, int $rating, int $limit,
 }
 
 /**
- * Conta os produtos avaliados com os mesmos filtros da lista (para a paginação).
+ * Conta os produtos da lista com os mesmos filtros (para a paginação).
  * Lança: PDOException se o banco falhar.
  */
-function countReviewedProducts(PDO $pdo, string $search, int $rating): int
+function countUserProducts(PDO $pdo, int $userId, string $search, int $rating): int
 {
-    [$where, $having, $params] = buildProductFilter($search, $rating);
+    [$where, $having, $params] = buildProductFilter($userId, $search, $rating);
 
     $stmt = $pdo->prepare(
         'SELECT COUNT(*) FROM (
              SELECT p.id
              FROM products p
-             JOIN reviews r ON r.product_id = p.id
+             LEFT JOIN reviews r ON r.product_id = p.id
              WHERE ' . $where . '
              GROUP BY p.id
              HAVING ' . $having . '
-         ) AS reviewed'
+         ) AS user_products'
     );
     bindReviewParams($stmt, $params);
     $stmt->execute();
