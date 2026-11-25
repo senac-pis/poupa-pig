@@ -26,7 +26,7 @@ return [
         'status'  => 422,
         'message' => 'Esse email não parece válido. Dá uma olhadinha.',
     ],
-    // Cadastro: senha com menos de 8 caracteres
+    // Cadastro e trocar senha: senha com menos de 8 caracteres
     'WEAK_PASSWORD' => [
         'status'  => 422,
         'message' => 'Sua senha precisa ter pelo menos 8 caracteres.',
@@ -41,7 +41,7 @@ return [
         'status'  => 500,
         'message' => 'Algo deu errado do nosso lado. Tenta de novo daqui a pouco.',
     ],
-    // Cadastro e categorias (nome com mais de 120 caracteres) e itens (nome com mais de 100)
+    // Cadastro, configurações e categorias (nome com mais de 120 caracteres) e itens (nome com mais de 100)
     'INVALID_NAME' => [
         'status'  => 422,
         'message' => 'Esse nome está muito longo. Tenta encurtar um pouco.',
@@ -116,5 +116,18 @@ return [
     'CATEGORY_HAS_ITEMS' => [
         'status'  => 409,
         'message' => 'Essa categoria ainda tem itens. Mova ou remova os itens antes de remover a categoria.',
+    ],
+
+    // ---- Configurações ----
+
+    // Trocar senha: a senha atual não confere com a do banco
+    'WRONG_PASSWORD' => [
+        'status'  => 422,
+        'message' => 'A senha atual não está certa. Confere e tenta de novo.',
+    ],
+    // Trocar senha: a confirmação é diferente da nova senha
+    'PASSWORD_MISMATCH' => [
+        'status'  => 422,
+        'message' => 'As senhas não são iguais.',
     ],
 ];
