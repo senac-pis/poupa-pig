@@ -156,7 +156,7 @@ return [
         'status'  => 422,
         'message' => 'Sua resenha passou de 1000 caracteres. Tenta encurtar um pouco.',
     ],
-    // Reviews: produto que não existe (ou item que não é do usuário, ao abrir pelo "Avaliar")
+    // Reviews: produto que não existe (ou que a pessoa não pode ver)
     'PRODUCT_NOT_FOUND' => [
         'status'  => 404,
         'message' => 'Não encontramos esse produto.',

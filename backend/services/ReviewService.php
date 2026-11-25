@@ -1,24 +1,14 @@
 <?php
 /**
- * Regras de Reviews: nome do produto, validação da review e redirects.
+ * Regras de Reviews: validação da review e redirects.
  *
- * Usado pelo controller create-review.php e pelas telas review.php e product-reviews.php.
+ * Usado pelo controller create-review.php.
  * Não conversa com o banco: isso é do ReviewModel.
  */
 
 const REVIEW_TEXT_MAX_LENGTH = 1000;   // o modal limita a 1000 caracteres
 // Caminho da página do produto, a partir de backend/controllers
 const PRODUCT_REVIEWS_PAGE = '../../frontend/pages/product-reviews.php';
-
-/**
- * Nome do produto a partir do nome do item: sem espaços nas pontas e com os espaços
- * do meio juntados ("Jaqueta   Adidas " vira "Jaqueta Adidas").
- * Maiúsculas e acentos ficam como vieram: quem compara é a collation do banco.
- */
-function normalizeProductName(string $name): string
-{
-    return trim((string) preg_replace('/\s+/u', ' ', $name));
-}
 
 /**
  * Lê e valida a review do formulário.

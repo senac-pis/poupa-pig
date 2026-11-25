@@ -6,8 +6,7 @@
  *
  * Contrato com o backend:
  * - exige usuário logado (requireLogin); o produto e as reviews são de todos os usuários (ReviewModel);
- * - ?item=N (o "Avaliar" da tela de Itens) acha ou cria o produto pelo nome do item do usuário
- *   e redireciona para ?id=; item que não é do usuário volta para a lista com PRODUCT_NOT_FOUND;
+ * - a pessoa chega aqui pela lista de Reviews, que mostra os produtos dos itens dela;
  * - $ratingSummary segue o formato descrito em components/reviews/rating-summary.php
  *   e conta todas as reviews do produto, sem paginação;
  * - cada review segue o formato descrito em components/reviews/review-card.php, paginada por ?page;
@@ -18,7 +17,6 @@
  */
 
 require_once __DIR__ . '/../../backend/config/auth.php';
-require_once __DIR__ . '/../../backend/services/ReviewService.php';
 require_once __DIR__ . '/../../backend/services/AccountService.php';
 
 $user = requireLogin('login.php');
@@ -26,9 +24,6 @@ $user = requireLogin('login.php');
 const REVIEWS_PER_PAGE = 10;
 
 $activePage = 'review';
-
-$rawItem = $_GET['item'] ?? '';
-$itemId = is_string($rawItem) && ctype_digit($rawItem) ? (int) $rawItem : 0;
 
 $rawId = $_GET['id'] ?? '';
 $productId = is_string($rawId) && ctype_digit($rawId) ? (int) $rawId : 0;
@@ -47,22 +42,6 @@ $currentPage = 1;
 try {
     require_once __DIR__ . '/../../backend/config/connection.php';
     require_once __DIR__ . '/../../backend/models/ReviewModel.php';
-
-    // Veio do "Avaliar" de um item: troca o item pelo produto e recarrega com ?id=
-    if ($itemId > 0) {
-        require_once __DIR__ . '/../../backend/models/ItemModel.php';
-
-        $item = findItemById($pdo, $itemId, $user['id']);
-        $productName = $item ? normalizeProductName($item['name']) : '';
-        if ($productName === '') {
-            $_SESSION['notification'] = ['type' => 'error', 'code' => 'PRODUCT_NOT_FOUND', 'field' => ''];
-            header('Location: review.php');
-            exit;
-        }
-
-        header('Location: product-reviews.php?id=' . findOrCreateProduct($pdo, $productName));
-        exit;
-    }
 
     $product = $productId > 0 ? findProductById($pdo, $productId) : null;
 

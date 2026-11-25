@@ -9,7 +9,7 @@
  * A lista de Reviews mostra os produtos dos itens de cada um, e só o dono do item avalia,
  * uma vez por produto.
  * O produto é o nome do item, comparado pela collation do banco (sem diferenciar maiúsculas
- * nem acentos) e com os espaços juntados (normalizeProductName, no ReviewService).
+ * nem acentos) e com os espaços juntados (REGEXP_REPLACE nas queries).
  * Em caso de falha do banco, a exceção sobe para quem chamou tratar.
  */
 
@@ -17,7 +17,7 @@
  * Garante que cada item do usuário tenha o seu produto (o nome do item com os espaços juntados).
  *
  * Roda antes da lista de Reviews: assim os itens que já existiam, ou que foram renomeados,
- * aparecem na lista sem precisar passar pelo "Avaliar".
+ * aparecem na lista.
  * Só tenta inserir os nomes que ainda não são produto: o InnoDB gasta um número do
  * AUTO_INCREMENT a cada tentativa, mesmo quando o UNIQUE recusa, e sem esse filtro os ids
  * pulariam a cada vez que a lista abre. O ON DUPLICATE KEY fica para dois pedidos ao mesmo tempo.
@@ -158,25 +158,6 @@ function findProductById(PDO $pdo, int $id): ?array
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     return $row === false ? null : ['id' => (int) $row['id'], 'name' => $row['name']];
-}
-
-/**
- * Devolve o id do produto com esse nome, criando o produto se ainda não existir.
- *
- * Recebe: $pdo e $name já normalizado (normalizeProductName).
- * O UNIQUE de products.name garante um produto só, mesmo com dois pedidos ao mesmo tempo:
- * no nome repetido, o LAST_INSERT_ID(id) devolve o id do produto que já existia.
- * Lança: PDOException se o banco falhar.
- */
-function findOrCreateProduct(PDO $pdo, string $name): int
-{
-    $stmt = $pdo->prepare(
-        'INSERT INTO products (name) VALUES (:name)
-         ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)'
-    );
-    $stmt->execute([':name' => $name]);
-
-    return (int) $pdo->lastInsertId();
 }
 
 /**
