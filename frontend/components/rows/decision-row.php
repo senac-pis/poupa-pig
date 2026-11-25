@@ -26,7 +26,9 @@ $cell = [
 ?>
 <tr>
     <td><?php include __DIR__ . '/../name-cell.php'; ?></td>
-    <td><?= htmlspecialchars($row['category_name']) ?></td>
+    <!-- Categoria longa corta com "..." e mostra o nome inteiro ao passar o mouse.
+         Mais estreita que em Itens porque a tabela fica dentro do drawer -->
+    <td><span class="block max-w-24 truncate" title="<?= htmlspecialchars($row['category_name']) ?>"><?= htmlspecialchars($row['category_name']) ?></span></td>
     <td class="whitespace-nowrap">R$ <?= number_format((float) $row['price'], 2, ',', '.') ?></td>
     <td class="whitespace-nowrap"><?= $rowDates['created_at'] ?></td>
     <td class="whitespace-nowrap"><?= $rowDates['decided_at'] ?></td>

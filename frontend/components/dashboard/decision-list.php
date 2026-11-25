@@ -34,16 +34,17 @@ $decisionIcons = [
                 };
                 ?>
                 <li class="flex items-center justify-between gap-3 py-2.5">
-                    <div class="flex items-center gap-2.5">
+                    <div class="flex min-w-0 items-center gap-2.5">
                         <span class="flex size-10 shrink-0 items-center justify-center rounded-full <?= $decisionIcon['class'] ?>">
                             <span class="size-5 <?= $decisionIcon['iconClass'] ?>" style="mask: <?= $decisionMask ?>; -webkit-mask: <?= $decisionMask ?>;"></span>
                         </span>
-                        <span class="flex flex-col">
-                            <span class="font-light"><?= htmlspecialchars($item['name']) ?></span>
+                        <!-- Nome longo corta com "..." e mostra o nome inteiro ao passar o mouse, como em Itens -->
+                        <span class="flex min-w-0 flex-col">
+                            <span class="truncate font-light" title="<?= htmlspecialchars($item['name']) ?>"><?= htmlspecialchars($item['name']) ?></span>
                             <span class="text-xs font-thin text-black-300"><?= $isGaveUp ? 'Desistiu' : 'Comprou' ?> · <?= $decidedDay ?></span>
                         </span>
                     </div>
-                    <span class="text-base font-bold <?= $isGaveUp ? 'text-green-500' : '' ?>">
+                    <span class="shrink-0 whitespace-nowrap text-base font-bold <?= $isGaveUp ? 'text-green-500' : '' ?>">
                         <?= $isGaveUp ? '+' : '' ?>R$ <?= number_format($item['price'], 2, ',', '.') ?>
                     </span>
                 </li>
