@@ -13,7 +13,9 @@
  * - depois de salvar, o backend volta para esta tela deixando a mensagem em $_SESSION['notification'];
  *   num erro de formulário, volta em ?action=new ou ?action=edit&id=N com
  *   $_SESSION['notification'] = ['type' => 'error', 'code' => ..., 'field' => ...] e
- *   $_SESSION['old_input'] com o que foi digitado (nunca a foto).
+ *   $_SESSION['old_input'] com o que foi digitado (nunca a foto);
+ * - no criar e editar, o nome sugere os produtos que a pessoa pode ver (listProductSuggestions):
+ *   o catálogo, os que já têm review e os nomes dos itens dela.
  */
 
 require_once __DIR__ . '/../../backend/config/auth.php';
@@ -72,6 +74,7 @@ $requestedPage = is_string($rawPage) && ctype_digit($rawPage) ? max(1, (int) $ra
 $items = [];
 $categories = [];
 $selectedItem = null;
+$productSuggestions = [];
 $totalItems = 0;
 $totalPages = 1;
 $currentPage = 1;
@@ -108,6 +111,12 @@ try {
     if (in_array($action, ['edit', 'remove'], true) && $itemId > 0) {
         $found = findItemById($pdo, $itemId, $user['id']);
         $selectedItem = $found ? prepareItemRow($found) : null;
+    }
+
+    // Autocompletar do nome: só quando o drawer de criar ou editar vai abrir
+    if (in_array($action, ['new', 'edit'], true)) {
+        require_once __DIR__ . '/../../backend/models/ReviewModel.php';
+        $productSuggestions = listProductSuggestions($pdo, $user['id']);
     }
 } catch (Throwable $e) {
     // Detalhe interno só no log do servidor; a tela mostra o aviso genérico
@@ -164,6 +173,7 @@ $shownItems = count($items);
             'old' => $oldInput,
             // $fieldError vem do notification.php, incluído no começo do <body>
             'error' => $fieldError,
+            'productSuggestions' => $productSuggestions,
         ];
         $drawerTitle = $isEdit ? 'Editar item' : 'Novo item';
         $drawerTemplate = __DIR__ . '/../components/forms/item-form.php';
