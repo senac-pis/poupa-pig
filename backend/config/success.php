@@ -32,4 +32,17 @@ return [
     'CATEGORY_DELETED' => [
         'message' => 'Categoria removida.',
     ],
+    // Configurações: nome e foto salvos, senha trocada e conta excluída (essa aparece no login)
+    'ACCOUNT_UPDATED' => [
+        'message' => 'Nome atualizado!',
+    ],
+    'PHOTO_UPDATED' => [
+        'message' => 'Foto atualizada!',
+    ],
+    'PASSWORD_UPDATED' => [
+        'message' => 'Senha alterada!',
+    ],
+    'ACCOUNT_DELETED' => [
+        'message' => 'Sua conta foi excluída. Até a próxima!',
+    ],
 ];

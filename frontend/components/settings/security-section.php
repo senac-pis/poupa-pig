@@ -5,13 +5,15 @@
 // Erro de um campo volta do backend como no login: $_SESSION['notification'] com 'field'
 $errorFor = $fieldError['field'] ?? '';
 
-// Dias desde a última troca de senha
-$changedDays = (new DateTime($user['password_changed_at']))->diff(new DateTime('today'))->days;
+// Dias desde a última troca de senha (já calculados pelo banco).
+// Sem o número (banco fora do ar), o aviso não aparece
+$changedDays = $user['password_changed_days'];
+$changedText = '';
 if ($changedDays === 0) {
     $changedText = 'Sua senha foi alterada hoje';
 } elseif ($changedDays === 1) {
     $changedText = 'Sua senha foi alterada há 1 dia';
-} else {
+} elseif ($changedDays !== null) {
     $changedText = "Sua senha foi alterada há $changedDays dias";
 }
 
@@ -23,7 +25,9 @@ $passwordFields = [
 ];
 ?>
 <div class="flex flex-col gap-4 p-6">
-    <p class="text-center text-sm text-green-500"><?= $changedText ?></p>
+    <?php if ($changedText): ?>
+        <p class="text-center text-sm text-green-500"><?= $changedText ?></p>
+    <?php endif; ?>
 
     <form method="post" action="../../backend/controllers/update-password.php" class="flex flex-col gap-4">
         <?php foreach ($passwordFields as $passwordField): ?>
