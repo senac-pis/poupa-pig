@@ -50,7 +50,7 @@ create table if not exists categories (
     user_id int unsigned not null,
     name varchar(120) not null,
     icon varchar(50) not null default 'box-seam',
-    color varchar(50) not null default 'gray',
+    color varchar(50) not null default 'gray-200',
     description text null,
     created_at timestamp not null default current_timestamp,
     constraint fk_categories_user

@@ -31,7 +31,7 @@ return [
         'status'  => 422,
         'message' => 'Sua senha precisa ter pelo menos 8 caracteres.',
     ],
-    // Login, cadastro e itens: campo obrigatório vazio (cadastro e itens informam o campo)
+    // Login, cadastro, itens e categorias: campo obrigatório vazio (cadastro e itens informam o campo)
     'REQUIRED_FIELD' => [
         'status'  => 422,
         'message' => 'Esse campo é obrigatório.',
@@ -41,7 +41,7 @@ return [
         'status'  => 500,
         'message' => 'Algo deu errado do nosso lado. Tenta de novo daqui a pouco.',
     ],
-    // Cadastro (nome com mais de 120 caracteres) e itens (nome com mais de 100)
+    // Cadastro e categorias (nome com mais de 120 caracteres) e itens (nome com mais de 100)
     'INVALID_NAME' => [
         'status'  => 422,
         'message' => 'Esse nome está muito longo. Tenta encurtar um pouco.',
@@ -88,5 +88,33 @@ return [
     'ITEM_NOT_FOUND' => [
         'status'  => 404,
         'message' => 'Não encontramos esse item. Talvez ele já tenha sido removido.',
+    ],
+
+    // ---- Categorias ----
+
+    // Categorias: ícone fora da lista de backend/config/categories.php
+    'INVALID_ICON' => [
+        'status'  => 422,
+        'message' => 'Escolha um ícone da lista.',
+    ],
+    // Categorias: cor fora da lista de backend/config/categories.php
+    'INVALID_COLOR' => [
+        'status'  => 422,
+        'message' => 'Escolha uma cor da lista.',
+    ],
+    // Categorias: descrição acima do limite do banco (65.535 bytes)
+    'INVALID_DESCRIPTION' => [
+        'status'  => 422,
+        'message' => 'Essa descrição está muito longa. Tenta encurtar um pouco.',
+    ],
+    // Categorias: id que não existe ou que é de outro usuário (os dois casos devolvem o mesmo)
+    'CATEGORY_NOT_FOUND' => [
+        'status'  => 404,
+        'message' => 'Não encontramos essa categoria. Talvez ela já tenha sido removida.',
+    ],
+    // Categorias: remover categoria que ainda tem itens
+    'CATEGORY_HAS_ITEMS' => [
+        'status'  => 409,
+        'message' => 'Essa categoria ainda tem itens. Mova ou remova os itens antes de remover a categoria.',
     ],
 ];
