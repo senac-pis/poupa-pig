@@ -31,7 +31,7 @@ return [
         'status'  => 422,
         'message' => 'Sua senha precisa ter pelo menos 8 caracteres.',
     ],
-    // Login, cadastro, itens e categorias: campo obrigatório vazio (cadastro e itens informam o campo)
+    // Login, cadastro, itens, categorias e reviews: campo obrigatório vazio (cadastro e itens informam o campo)
     'REQUIRED_FIELD' => [
         'status'  => 422,
         'message' => 'Esse campo é obrigatório.',
@@ -142,5 +142,33 @@ return [
     'ITEM_ALREADY_DECIDED' => [
         'status'  => 409,
         'message' => 'Esse item já foi decidido.',
+    ],
+
+    // ---- Reviews ----
+
+    // Reviews: nota fora de 1 a 5
+    'INVALID_RATING' => [
+        'status'  => 422,
+        'message' => 'Escolha de 1 a 5 pillars.',
+    ],
+    // Reviews: resenha com mais de 1000 caracteres
+    'INVALID_REVIEW_TEXT' => [
+        'status'  => 422,
+        'message' => 'Sua resenha passou de 1000 caracteres. Tenta encurtar um pouco.',
+    ],
+    // Reviews: produto que não existe (ou que a pessoa não pode ver)
+    'PRODUCT_NOT_FOUND' => [
+        'status'  => 404,
+        'message' => 'Não encontramos esse produto.',
+    ],
+    // Reviews: quem não tem um item com o nome do produto não pode avaliar
+    'REVIEW_NOT_ALLOWED' => [
+        'status'  => 403,
+        'message' => 'Só dá para avaliar produtos que estão na sua lista de itens.',
+    ],
+    // Reviews: o usuário já avaliou esse produto
+    'REVIEW_ALREADY_EXISTS' => [
+        'status'  => 409,
+        'message' => 'Você já avaliou esse produto.',
     ],
 ];

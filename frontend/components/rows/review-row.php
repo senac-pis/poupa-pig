@@ -18,8 +18,9 @@ $rating = ['value' => $row['average'], 'size' => 'size-4'];
 ?>
 <tr>
     <td>
-        <a href="<?= $rowUrl ?>"
-            class="rounded font-light hover:text-secondary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary">
+        <!-- Nome longo corta com "..." e mostra o nome inteiro ao passar o mouse, como em Itens -->
+        <a href="<?= $rowUrl ?>" title="<?= htmlspecialchars($row['name']) ?>"
+            class="block max-w-60 truncate rounded font-light hover:text-secondary hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary">
             <?= htmlspecialchars($row['name']) ?>
         </a>
     </td>

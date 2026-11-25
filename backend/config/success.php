@@ -52,4 +52,8 @@ return [
     'ITEM_BOUGHT' => [
         'message' => 'Compra registrada.',
     ],
+    // Reviews: review enviada
+    'REVIEW_CREATED' => [
+        'message' => 'Review publicada! Obrigado por ajudar os outros Piggers.',
+    ],
 ];

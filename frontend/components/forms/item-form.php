@@ -2,7 +2,8 @@
 /** @var array $itemForm */
 // Antes do include: $itemForm = ['action' => '<endpoint>', 'item' => $row ou null, 'categories' => [...], 'submitLabel' => 'Criar']
 // 'item' null = Novo item; com o $row (mesmo formato da linha da tabela + 'category_id') = Editar
-// Opcionais: 'old' (o que foi digitado antes do erro) e 'error' (o $fieldError do notification.php)
+// Opcionais: 'old' (o que foi digitado antes do erro), 'error' (o $fieldError do notification.php)
+// e 'productSuggestions' (nomes de produtos para o autocompletar do nome; ver listProductSuggestions)
 // O backend valida tudo de novo; na foto: tamanho, tipo real pelo conteúdo e nome gerado por ele
 $formItem = $itemForm['item'];
 // Voltando de um erro, o que foi digitado vale mais que o salvo no banco
@@ -50,10 +51,16 @@ if ($formValues) {
         // Com erro em outro campo, o foco vai para ele
         'autofocus' => $errorFor === '',
         'error' => $errorFor === 'name' ? $errorMessage : '',
-        'attributes' => ['maxlength' => '100'],
+        // O navegador sugere os produtos conforme a pessoa digita; um nome novo continua valendo
+        'attributes' => ['maxlength' => '100', 'list' => 'product-suggestions', 'autocomplete' => 'off'],
     ];
     include __DIR__ . '/../text-field.php';
     ?>
+    <datalist id="product-suggestions">
+        <?php foreach ($itemForm['productSuggestions'] ?? [] as $suggestion): ?>
+            <option value="<?= htmlspecialchars($suggestion) ?>"></option>
+        <?php endforeach; ?>
+    </datalist>
 
     <div class="flex flex-col">
         <label for="field-category" class="text-base font-bold">Categoria</label>

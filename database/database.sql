@@ -84,3 +84,35 @@ create table if not exists items (
 );
 
 
+
+-- Produtos de Reviews: compartilhados entre os usuários e identificados pelo nome do item.
+-- O UNIQUE usa a collation do banco (utf8mb4_unicode_ci), que não diferencia maiúsculas nem acentos:
+-- "Jaqueta Adidas" e "jaqueta adidas" são o mesmo produto. O backend junta os espaços antes de salvar.
+-- is_public marca o catálogo (database/seeds/products.sql): esses aparecem para todos no
+-- autocompletar do item. Produto criado a partir do item de alguém só fica visível para os outros
+-- depois da primeira review.
+create table if not exists products (
+    id int unsigned auto_increment primary key,
+    name varchar(180) not null,
+    is_public boolean not null default false,
+    created_at timestamp not null default current_timestamp,
+    constraint uq_products_name unique (name)
+);
+
+-- Uma review por usuário em cada produto; a resenha é opcional, a nota vai de 1 a 5
+create table if not exists reviews (
+    id int unsigned auto_increment primary key,
+    product_id int unsigned not null,
+    user_id int unsigned not null,
+    rating tinyint unsigned not null,
+    text text null,
+    created_at timestamp not null default current_timestamp,
+    constraint uq_reviews_product_user unique (product_id, user_id),
+    constraint chk_reviews_rating check (rating between 1 and 5),
+    constraint fk_reviews_product
+        foreign key (product_id) references products(id)
+        on delete cascade,
+    constraint fk_reviews_user
+        foreign key (user_id) references users(id)
+        on delete cascade
+);
