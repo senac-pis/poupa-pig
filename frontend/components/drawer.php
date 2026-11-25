@@ -3,6 +3,8 @@
 /** @var string $drawerTemplate */
 // Antes do include: $drawerTitle e $drawerTemplate (o arquivo com o conteúdo, ex.: o form do item)
 // A página só inclui o drawer quando a URL pede (?action=new ou ?action=edit&id=5)
+// Opcional: $drawerWidth troca a largura (padrão w-[480px])
+$drawerWidth = $drawerWidth ?? 'w-[480px]';
 
 // Fechar volta para a mesma URL sem action e id, mantendo busca, filtros e página
 $closeUrl = htmlspecialchars('?' . http_build_query(array_diff_key($_GET, ['action' => '', 'id' => ''])));
@@ -16,7 +18,7 @@ $closeUrl = htmlspecialchars('?' . http_build_query(array_diff_key($_GET, ['acti
 
 <!-- O <dialog> com showModal() já dá Esc, foco preso dentro dele e o resto da página ignorado -->
 <dialog aria-labelledby="drawer-title" data-close-url="<?= $closeUrl ?>"
-    class="fixed inset-y-0 left-auto right-0 m-0 h-full max-h-none w-[480px] max-w-full bg-background p-0 text-primary backdrop:bg-blue-alpha-500">
+    class="fixed inset-y-0 left-auto right-0 m-0 h-full max-h-none <?= $drawerWidth ?> max-w-full bg-background p-0 text-primary backdrop:bg-blue-alpha-500">
     <!-- O conteúdo cobre o dialog todo: assim um clique que chega no próprio dialog só pode ter sido no fundo -->
     <div class="flex h-full flex-col gap-5 overflow-y-auto p-6">
         <div class="flex items-center gap-4">

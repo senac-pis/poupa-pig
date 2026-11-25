@@ -18,7 +18,7 @@ $userAccent = $_SESSION['user']['accent_color'] ?? null;
     // null quando o usuário nunca escolheu uma cor
     const userAccentColor = <?= json_encode(in_array($userAccent, $accentColors, true) ? $userAccent : null) ?>;
 
-    // Troca a secondary e os tons claros dela pela família da cor escolhida (ex.: green-400)
+    // Troca a secondary e os tons 100 a 500 da família pela cor escolhida (ex.: green-400)
     function applyAccentColor(color) {
         if (!accentColors.includes(color)) {
             return;
@@ -26,7 +26,7 @@ $userAccent = $_SESSION['user']['accent_color'] ?? null;
         const [family, tone] = color.split('-');
         const root = document.documentElement.style;
         root.setProperty('--color-secondary', `var(--color-${color})`);
-        ['100', '200', '300'].forEach((shade) => {
+        ['100', '200', '300', '400', '500'].forEach((shade) => {
             root.setProperty(`--color-secondary-${shade}`, `var(--color-${family}-${shade})`);
         });
         const strongTone = tone === '300' ? '500' : tone;

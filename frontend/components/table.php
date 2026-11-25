@@ -11,7 +11,7 @@
 <div class="min-h-0 flex-1 overflow-y-auto rounded-2xl border border-secondary">
     <!-- O padding das células fica aqui, então os templates de linha escrevem só <td> -->
     <table class="w-full text-left text-sm font-medium [&_td]:px-4 [&_td]:py-2">
-        <thead class="sticky top-0 bg-secondary-200 text-base font-bold">
+        <thead class="sticky top-0 z-10 bg-secondary-200 text-base font-bold">
             <tr>
                 <?php foreach ($columns as $column): ?>
                     <th scope="col" class="h-10 px-4"><?= htmlspecialchars($column) ?></th>

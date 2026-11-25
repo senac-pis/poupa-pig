@@ -34,6 +34,9 @@ if ($period['start'] && $period['end']) {
     $periodLabel = 'Todo o período';
 }
 
+// O search-bar.php mostra esse número no botão ("Filtros (2)")
+$activeFilters = ($selectedCategory ? 1 : 0) + ($period['start'] || $period['end'] ? 1 : 0);
+
 $summaryClass = 'flex cursor-pointer list-none items-center justify-between rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary [&::-webkit-details-marker]:hidden';
 $optionClass = 'flex cursor-pointer gap-2.5 rounded hover:text-secondary has-[:checked]:text-secondary has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-secondary';
 ?>

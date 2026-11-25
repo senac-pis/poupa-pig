@@ -2,22 +2,23 @@
 /** @var string $searchPlaceholder */
 // Antes do include: $searchPlaceholder e $categories (repassado para o filters.php)
 // Opcional: $filtersEnabled = false esconde o botão de filtros (telas sem filtro, como Categorias)
+// Opcional: $filtersTemplate troca o painel (padrão: filters.php, de categoria e período);
+// o painel precisa definir $activeFilters com quantos filtros estão aplicados
 // A busca vai pela URL (?search=ps5) e aplica com Enter
 $rawSearch = $_GET['search'] ?? '';
 $searchTerm = is_string($rawSearch) ? mb_substr(trim($rawSearch), 0, 100) : '';
 $filtersEnabled ??= true;
+$filtersTemplate ??= __DIR__ . '/filters.php';
 $filterLabel = 'Todos';
 
 if ($filtersEnabled) {
-    // Renderiza os filtros antes para saber quantos estão ativos (o filters.php valida e deixa
-    // $selectedCategory e $period prontos); o HTML entra no painel lá embaixo
+    // Renderiza o painel antes para saber quantos filtros estão ativos ($activeFilters vem dele);
+    // o HTML entra no painel lá embaixo
     ob_start();
-    include __DIR__ . '/filters.php';
+    include $filtersTemplate;
     $filtersHtml = ob_get_clean();
-    /** @var int $selectedCategory */
-    /** @var array $period */
+    /** @var int $activeFilters */
 
-    $activeFilters = ($selectedCategory ? 1 : 0) + ($period['start'] || $period['end'] ? 1 : 0);
     $filterLabel = $activeFilters ? "Filtros ($activeFilters)" : 'Todos';
 }
 
