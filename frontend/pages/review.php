@@ -5,33 +5,54 @@
  * Layout implementado a partir do Figma (Desktop - Light mode reviews).
  *
  * Contrato com o backend:
- * - $products é fixo por enquanto; o backend troca pela consulta ao banco,
- *   já filtrada por ?search, ?rating e ?page;
+ * - exige usuário logado (requireLogin); os produtos são compartilhados, então a lista mostra
+ *   os produtos avaliados por qualquer usuário (ReviewModel), já filtrados por ?search, ?rating e ?page;
  * - cada produto segue o formato descrito em components/rows/review-row.php,
  *   com a média e as contagens já calculadas;
- * - ?rating=4 traz os produtos com a média arredondada em 4 (de 3.5 até antes de 4.5).
+ * - ?rating=4 traz os produtos com a média arredondada em 4 (de 3.5 até antes de 4.5);
+ * - um produto entra na lista quando recebe a primeira review, pela página dele
+ *   (aberta pelo "Avaliar" da tela de Itens).
  */
 
-session_start();
+require_once __DIR__ . '/../../backend/config/auth.php';
+
+$user = requireLogin('login.php');
+
+const PRODUCTS_PER_PAGE = 10;
 
 $activePage = 'review';
 
-// Dados fixos até o backend existir; para ver o estado vazio, troque por $products = [];
-$products = [
-    ['id' => 1, 'name' => 'Moto G7', 'user_count' => 45, 'review_count' => 45, 'average' => 4.2],
-    ['id' => 2, 'name' => 'Playstation 5', 'user_count' => 6, 'review_count' => 6, 'average' => 3.6],
-    ['id' => 3, 'name' => 'Iphone 11', 'user_count' => 67, 'review_count' => 67, 'average' => 4.8],
-    ['id' => 4, 'name' => 'Boné LS', 'user_count' => 3, 'review_count' => 3, 'average' => 2.3],
-    ['id' => 5, 'name' => 'Hyundai i30', 'user_count' => 2, 'review_count' => 2, 'average' => 5],
-    ['id' => 6, 'name' => 'Tenis adidas', 'user_count' => 10, 'review_count' => 10, 'average' => 1.5],
-];
+// Parâmetros da URL, todos validados (o rating-filters.php faz a mesma leitura do ?rating)
+$rawSearch = $_GET['search'] ?? '';
+$search = is_string($rawSearch) ? mb_substr(trim($rawSearch), 0, 100) : '';
 
-// Paginação: o backend vai devolver os totais; por enquanto é tudo uma página só
+$rawRating = $_GET['rating'] ?? '';
+$ratingFilter = is_string($rawRating) && ctype_digit($rawRating) && (int) $rawRating <= 5 ? (int) $rawRating : 0;
+
 $rawPage = $_GET['page'] ?? '1';
-$currentPage = is_string($rawPage) && ctype_digit($rawPage) ? (int) $rawPage : 1;
+$requestedPage = is_string($rawPage) && ctype_digit($rawPage) ? max(1, (int) $rawPage) : 1;
+
+$products = [];
+$totalItems = 0;
 $totalPages = 1;
+$currentPage = 1;
+
+try {
+    require_once __DIR__ . '/../../backend/config/connection.php';
+    require_once __DIR__ . '/../../backend/models/ReviewModel.php';
+
+    $totalItems = countReviewedProducts($pdo, $search, $ratingFilter);
+    $totalPages = max(1, (int) ceil($totalItems / PRODUCTS_PER_PAGE));
+    $currentPage = min($requestedPage, $totalPages);
+
+    $products = listReviewedProducts($pdo, $search, $ratingFilter, PRODUCTS_PER_PAGE, ($currentPage - 1) * PRODUCTS_PER_PAGE);
+} catch (Throwable $e) {
+    // Detalhe interno só no log do servidor; a tela mostra o aviso genérico
+    error_log('[review] ' . $e->getMessage());
+    $_SESSION['notification'] = ['type' => 'error', 'code' => 'UNKNOWN_ERROR', 'field' => ''];
+}
+
 $shownItems = count($products);
-$totalItems = count($products);
 ?>
 <!doctype html>
 <html lang="pt-BR">

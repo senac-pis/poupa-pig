@@ -5,84 +5,98 @@
  * Layout implementado a partir do Figma (Desktop - Light mode reviews produto).
  *
  * Contrato com o backend:
- * - $products, $ratingSummary e $reviews são fixos por enquanto; o backend troca pela consulta
- *   ao banco do produto do ?id, com as reviews já paginadas por ?page;
+ * - exige usuário logado (requireLogin); o produto e as reviews são de todos os usuários (ReviewModel);
+ * - ?item=N (o "Avaliar" da tela de Itens) acha ou cria o produto pelo nome do item do usuário
+ *   e redireciona para ?id=; item que não é do usuário volta para a lista com PRODUCT_NOT_FOUND;
  * - $ratingSummary segue o formato descrito em components/reviews/rating-summary.php
  *   e conta todas as reviews do produto, sem paginação;
- * - cada review segue o formato descrito em components/reviews/review-card.php;
+ * - cada review segue o formato descrito em components/reviews/review-card.php, paginada por ?page;
+ * - "Nova review" só aparece para quem tem um item com o nome do produto e ainda não avaliou;
  * - o modal envia POST para backend/controllers/create-review.php (product_id, rating e text);
  * - depois de salvar, o backend volta para esta tela deixando a mensagem em $_SESSION['notification'].
  */
 
-session_start();
+require_once __DIR__ . '/../../backend/config/auth.php';
+require_once __DIR__ . '/../../backend/services/ReviewService.php';
+require_once __DIR__ . '/../../backend/services/AccountService.php';
+
+$user = requireLogin('login.php');
+
+const REVIEWS_PER_PAGE = 10;
 
 $activePage = 'review';
 
-// Dados fixos até o backend existir; todo produto mostra as mesmas reviews
-$products = [
-    ['id' => 1, 'name' => 'Moto G7'],
-    ['id' => 2, 'name' => 'Playstation 5'],
-    ['id' => 3, 'name' => 'Iphone 11'],
-    ['id' => 4, 'name' => 'Boné LS'],
-    ['id' => 5, 'name' => 'Hyundai i30'],
-    ['id' => 6, 'name' => 'Tenis adidas'],
-];
+$rawItem = $_GET['item'] ?? '';
+$itemId = is_string($rawItem) && ctype_digit($rawItem) ? (int) $rawItem : 0;
 
 $rawId = $_GET['id'] ?? '';
 $productId = is_string($rawId) && ctype_digit($rawId) ? (int) $rawId : 0;
 
-// Procura o produto da URL na lista; se não existir, volta para a lista de reviews
+$rawPage = $_GET['page'] ?? '1';
+$requestedPage = is_string($rawPage) && ctype_digit($rawPage) ? max(1, (int) $rawPage) : 1;
+
 $product = null;
-foreach ($products as $productOption) {
-    if ($productOption['id'] === $productId) {
-        $product = $productOption;
+$ratingSummary = ['review_count' => 0, 'average' => 0, 'distribution' => []];
+$reviews = [];
+$canReview = false;
+$totalItems = 0;
+$totalPages = 1;
+$currentPage = 1;
+
+try {
+    require_once __DIR__ . '/../../backend/config/connection.php';
+    require_once __DIR__ . '/../../backend/models/ReviewModel.php';
+
+    // Veio do "Avaliar" de um item: troca o item pelo produto e recarrega com ?id=
+    if ($itemId > 0) {
+        require_once __DIR__ . '/../../backend/models/ItemModel.php';
+
+        $item = findItemById($pdo, $itemId, $user['id']);
+        $productName = $item ? normalizeProductName($item['name']) : '';
+        if ($productName === '') {
+            $_SESSION['notification'] = ['type' => 'error', 'code' => 'PRODUCT_NOT_FOUND', 'field' => ''];
+            header('Location: review.php');
+            exit;
+        }
+
+        header('Location: product-reviews.php?id=' . findOrCreateProduct($pdo, $productName));
+        exit;
     }
+
+    $product = $productId > 0 ? findProductById($pdo, $productId) : null;
+
+    if ($product) {
+        $ratingSummary = productRatingSummary($pdo, $product['id']);
+
+        $totalItems = $ratingSummary['review_count'];
+        $totalPages = max(1, (int) ceil($totalItems / REVIEWS_PER_PAGE));
+        $currentPage = min($requestedPage, $totalPages);
+
+        $reviews = array_map(
+            fn(array $review): array => array_merge($review, ['user_photo' => userPhotoUrl($review['user_photo'])]),
+            listProductReviews($pdo, $product['id'], REVIEWS_PER_PAGE, ($currentPage - 1) * REVIEWS_PER_PAGE)
+        );
+
+        $canReview = userHasProductItem($pdo, $user['id'], $product['name'])
+            && !userReviewedProduct($pdo, $user['id'], $product['id']);
+    }
+} catch (Throwable $e) {
+    // Detalhe interno só no log do servidor; volta para a lista com o aviso genérico
+    error_log('[product-reviews] ' . $e->getMessage());
+    $_SESSION['notification'] = ['type' => 'error', 'code' => 'UNKNOWN_ERROR', 'field' => ''];
+    header('Location: review.php');
+    exit;
 }
 
+// Produto que não existe: volta para a lista de reviews
 if (!$product) {
     header('Location: review.php');
     exit;
 }
 
-$ratingSummary = [
-    'review_count' => 10,
-    'average' => 3.6,
-    'distribution' => [5 => 3, 4 => 3, 3 => 2, 2 => 1, 1 => 1],
-];
+$showReviewForm = $canReview && ($_GET['action'] ?? '') === 'new';
 
-// Para ver o estado vazio, troque por $reviews = [];
-$reviews = [
-    [
-        'user_name' => 'Ana Souza',
-        'user_review_count' => 3,
-        'rating' => 5,
-        'text' => "Comprei depois de pensar bastante e valeu cada centavo.\nA bateria dura o dia todo.",
-        'created_at' => '2026-09-18',
-    ],
-    [
-        'user_name' => 'Bruno Lima',
-        'user_review_count' => 1,
-        'rating' => 4,
-        'text' => '',
-        'created_at' => '2026-09-12',
-    ],
-    [
-        'user_name' => 'Carla Mendes',
-        'user_review_count' => 7,
-        'rating' => 2,
-        'text' => 'Achei caro pelo que entrega. Esperaria uma promoção.',
-        'created_at' => '2026-08-30',
-    ],
-];
-
-$showReviewForm = ($_GET['action'] ?? '') === 'new';
-
-// Paginação: o backend vai devolver os totais; por enquanto é tudo uma página só
-$rawPage = $_GET['page'] ?? '1';
-$currentPage = is_string($rawPage) && ctype_digit($rawPage) ? (int) $rawPage : 1;
-$totalPages = 1;
 $shownItems = count($reviews);
-$totalItems = count($reviews);
 ?>
 <!doctype html>
 <html lang="pt-BR">
@@ -101,7 +115,8 @@ $totalItems = count($reviews);
         <?php
         $pageTitle = $product['name'];
         $backHref = 'review.php';
-        $actionLabel = 'Nova review';
+        // Só quem tem o produto nos itens e ainda não avaliou vê o botão
+        $actionLabel = $canReview ? 'Nova review' : '';
         $actionHref = '?' . http_build_query(array_merge($_GET, ['action' => 'new']));
         include __DIR__ . '/../components/page-header.php';
 

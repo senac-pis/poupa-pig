@@ -23,7 +23,12 @@ $cell = [
     'icon' => $row['category_icon'],
     'color' => $row['category_color'],
 ];
-$rowActions = ['id' => $row['id'], 'name' => $row['name']];
+// Avaliar leva às reviews do produto com o nome do item (compartilhadas entre os usuários)
+$rowActions = [
+    'id' => $row['id'],
+    'name' => $row['name'],
+    'reviewUrl' => 'product-reviews.php?' . http_build_query(['item' => (int) $row['id']]),
+];
 ?>
 <tr>
     <td><?php include __DIR__ . '/../name-cell.php'; ?></td>
