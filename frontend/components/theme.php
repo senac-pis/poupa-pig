@@ -13,7 +13,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@200;300;400;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <style type="text/tailwindcss">
-    @theme {
+    /* static: gera todas as cores, mesmo as que nenhuma classe usa. O accent-color.php
+       troca a cor principal por var(--color-green-400), por exemplo, e essa variável precisa existir */
+    @theme static {
         /* Paleta do Figma (coleção "color"): pink/400 no Figma = pink-400 aqui */
         --color-pink-100: #fce8eb;
         --color-pink-200: #f9d0d7;
@@ -73,6 +75,13 @@
         /* Cores principais da identidade visual */
         --color-primary: var(--color-blue-500);     /* textos, bordas e título */
         --color-secondary: var(--color-pink-400);   /* botão principal e "PIG" da logo */
+        /* Tons claros da cor principal; o accent-color.php troca junto com a secondary */
+        --color-secondary-100: var(--color-pink-100);
+        --color-secondary-200: var(--color-pink-200);
+        --color-secondary-300: var(--color-pink-300);
+        /* Texto e ícone dos botões claros (fundo secondary-200); o accent-color.php
+           troca o tom 300 pelo 500 da família, porque o 300 some no fundo 200 */
+        --color-secondary-strong: var(--color-pink-400);
         --color-background: var(--color-white-200); /* fundo e texto do botão */
 
         --font-sans: "Google Sans Flex", ui-sans-serif, system-ui, sans-serif;

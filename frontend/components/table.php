@@ -8,10 +8,10 @@
 // $rowTemplate = __DIR__ . '/rows/item-row.php' (desenha um <tr> usando $row e escapa o que mostra)
 ?>
 <!-- Com muitas linhas, a tabela rola por dentro e o cabeçalho fica fixo no topo -->
-<div class="min-h-0 flex-1 overflow-y-auto rounded-2xl border border-pink-400">
+<div class="min-h-0 flex-1 overflow-y-auto rounded-2xl border border-secondary">
     <!-- O padding das células fica aqui, então os templates de linha escrevem só <td> -->
     <table class="w-full text-left text-sm font-medium [&_td]:px-4 [&_td]:py-2">
-        <thead class="sticky top-0 bg-pink-200 text-base font-bold">
+        <thead class="sticky top-0 bg-secondary-200 text-base font-bold">
             <tr>
                 <?php foreach ($columns as $column): ?>
                     <th scope="col" class="h-10 px-4"><?= htmlspecialchars($column) ?></th>

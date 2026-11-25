@@ -7,7 +7,7 @@ $categoryStyles ??= require __DIR__ . '/../../backend/config/categories.php';
 $pickerValue = $iconPicker['value'];
 $pickerMask = $pickerValue ? "url(../assets/icons/$pickerValue.svg) center / contain no-repeat" : '';
 
-$pickerOptionClass = 'group flex size-9 cursor-pointer items-center justify-center rounded-lg bg-pink-100 transition hover:bg-pink-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary aria-pressed:bg-pink-300';
+$pickerOptionClass = 'group flex size-9 cursor-pointer items-center justify-center rounded-lg bg-secondary-100 transition hover:bg-secondary-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary aria-pressed:bg-secondary-300';
 ?>
 <div class="relative" data-icon-picker>
     <input type="hidden" name="icon" value="<?= htmlspecialchars($pickerValue) ?>" data-icon-input>
@@ -42,8 +42,8 @@ $pickerOptionClass = 'group flex size-9 cursor-pointer items-center justify-cent
                 Selecionar
             </button>
             <button type="button" aria-label="Cancelar" title="Cancelar" data-icon-cancel
-                class="flex size-9 cursor-pointer items-center justify-center rounded-full bg-pink-200 transition hover:bg-pink-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-                <img src="../assets/icons/x.svg" alt="" width="16" height="16" class="size-4">
+                class="flex size-9 cursor-pointer items-center justify-center rounded-full bg-secondary-200 transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                <span class="size-4 shrink-0 bg-secondary-strong" style="mask: url(../assets/icons/x.svg) center / contain no-repeat; -webkit-mask: url(../assets/icons/x.svg) center / contain no-repeat;"></span>
             </button>
         </div>
     </div>

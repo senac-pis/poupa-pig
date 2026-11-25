@@ -21,7 +21,7 @@ $logoSize = 'small';
                 <?php $isActive = $page === $activePage; ?>
                 <li>
                     <a href="<?= $item['href'] ?>" <?= $isActive ? 'aria-current="page"' : '' ?>
-                        class="block rounded-2xl px-4 py-2 text-center text-[22px] font-bold transition focus:outline-none focus:ring-2 focus:ring-primary <?= $isActive ? 'bg-secondary text-white-100' : 'hover:bg-pink-100' ?>">
+                        class="block rounded-2xl px-4 py-2 text-center text-[22px] font-bold transition focus:outline-none focus:ring-2 focus:ring-primary <?= $isActive ? 'bg-secondary text-white-100' : 'hover:bg-secondary-100' ?>">
                         <?= $item['label'] ?>
                     </a>
                 </li>
@@ -33,7 +33,7 @@ $logoSize = 'small';
                 <img src="../assets/icons/person.svg" alt="" width="26" height="26" class="size-[26px]">
             </div>
             <div class="flex flex-col text-sm">
-                <span class="font-bold text-secondary">Usuário</span>
+                <span class="font-bold text-secondary"><?= htmlspecialchars($_SESSION['user']['name'] ?? 'Usuário') ?></span>
                 <a href="settings.php" class="hover:underline">Configurações</a>
             </div>
         </div>

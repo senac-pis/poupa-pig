@@ -2,8 +2,11 @@
 /** @var array $confirmDialog */
 // Antes do include: $confirmDialog = ['title' => 'Remover item', 'name' => 'Ps5', 'id' => 5, 'action' => '<endpoint do backend>']
 // A página só inclui quando a URL pede (?action=remove&id=5); quem apaga é o POST do botão Remover
-// Opcional: 'blocked' => 'mensagem' troca a pergunta pelo aviso e deixa só o botão Entendi (sem o POST)
+// Opcionais: 'blocked' => 'mensagem' troca a pergunta pelo aviso e deixa só o botão Entendi (sem o POST);
+// 'message' e 'confirmLabel' trocam a pergunta e o texto do botão; sem 'id', o POST vai sem id (ex.: excluir conta)
 $blockedMessage = $confirmDialog['blocked'] ?? '';
+$confirmMessage = $confirmDialog['message'] ?? "Tem certeza que deseja remover {$confirmDialog['name']}?";
+$confirmLabel = $confirmDialog['confirmLabel'] ?? 'Remover';
 
 // Cancelar volta para a mesma URL sem action e id, mantendo busca, filtros e página
 $cancelUrl = htmlspecialchars('?' . http_build_query(array_diff_key($_GET, ['action' => '', 'id' => ''])));
@@ -26,22 +29,24 @@ $cancelUrl = htmlspecialchars('?' . http_build_query(array_diff_key($_GET, ['act
             <?php if ($blockedMessage): ?>
                 <?= htmlspecialchars($blockedMessage) ?>
             <?php else: ?>
-                Tem certeza que deseja remover <?= htmlspecialchars($confirmDialog['name']) ?>?
+                <?= htmlspecialchars($confirmMessage) ?>
             <?php endif; ?>
         </p>
 
         <?php if ($blockedMessage): ?>
             <!-- Sem form: não tem o que enviar, o botão só fecha o modal como o Cancelar -->
             <a href="<?= $cancelUrl ?>" autofocus
-                class="flex h-11 w-36 items-center justify-center rounded-[48px] bg-secondary text-lg text-background transition hover:bg-pink-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+                class="flex h-11 w-36 items-center justify-center rounded-[48px] bg-secondary text-lg text-background transition hover:brightness-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                 Entendi
             </a>
         <?php else: ?>
             <form method="post" action="<?= htmlspecialchars($confirmDialog['action']) ?>" class="flex gap-4">
-                <input type="hidden" name="id" value="<?= (int) $confirmDialog['id'] ?>">
+                <?php if (isset($confirmDialog['id'])): ?>
+                    <input type="hidden" name="id" value="<?= (int) $confirmDialog['id'] ?>">
+                <?php endif; ?>
                 <button type="submit"
                     class="h-11 w-36 cursor-pointer rounded-[48px] bg-red-400 text-lg text-background transition hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-                    Remover
+                    <?= htmlspecialchars($confirmLabel) ?>
                 </button>
                 <!-- O foco começa aqui: um Enter sem querer não apaga nada -->
                 <a href="<?= $cancelUrl ?>" autofocus
