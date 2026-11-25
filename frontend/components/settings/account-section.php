@@ -1,9 +1,12 @@
 <?php
 /** @var array $user */
 /** @var string $action */
+/** @var array|null $fieldError */
 // Seção Conta da tela de Configurações (pages/settings.php)
 // O nome vira campo pela URL (?section=account&action=edit-name); excluir abre o modal (?action=delete)
-$isEditingName = $action === 'edit-name';
+// Erro no nome volta do backend como no login: $_SESSION['notification'] com 'field' => 'name'
+$nameError = ($fieldError['field'] ?? '') === 'name' ? $fieldError['message'] : '';
+$isEditingName = $action === 'edit-name' || $nameError;
 $cameraMask = 'url(../assets/icons/camera.svg) center / contain no-repeat';
 $trashMask = 'url(../assets/icons/trash3.svg) center / contain no-repeat';
 ?>
@@ -14,11 +17,12 @@ $trashMask = 'url(../assets/icons/trash3.svg) center / contain no-repeat';
     </div>
 
     <?php if ($isEditingName): ?>
-        <form method="post" action="../../backend/controllers/update-account.php" class="flex w-full max-w-md items-center gap-2">
+        <form method="post" action="../../backend/controllers/update-account.php" class="flex w-full max-w-md flex-wrap items-center gap-2">
             <label for="account-name" class="sr-only">Nome</label>
             <input type="text" id="account-name" name="name" value="<?= htmlspecialchars($user['name']) ?>"
                 autocomplete="name" required maxlength="120" autofocus
-                class="h-9 min-w-0 flex-1 rounded-[32px] border border-primary bg-transparent px-4 text-base outline-none focus:ring-2 focus:ring-secondary">
+                <?= $nameError ? 'aria-invalid="true" aria-describedby="account-name-error"' : '' ?>
+                class="h-9 min-w-0 flex-1 rounded-[32px] border <?= $nameError ? 'border-red-400' : 'border-primary' ?> bg-transparent px-4 text-base outline-none focus:ring-2 focus:ring-secondary">
             <button type="submit"
                 class="h-9 shrink-0 cursor-pointer rounded-[48px] bg-secondary px-4 text-base text-background transition hover:brightness-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                 Salvar
@@ -27,6 +31,9 @@ $trashMask = 'url(../assets/icons/trash3.svg) center / contain no-repeat';
                 class="flex h-9 shrink-0 items-center rounded-[48px] border border-primary px-4 text-base transition hover:bg-blue-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary">
                 Cancelar
             </a>
+            <?php if ($nameError): ?>
+                <p id="account-name-error" class="w-full px-4 text-sm text-red-400"><?= htmlspecialchars($nameError) ?></p>
+            <?php endif; ?>
         </form>
     <?php else: ?>
         <div class="flex items-center gap-2">

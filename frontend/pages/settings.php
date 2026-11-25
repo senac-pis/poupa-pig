@@ -5,22 +5,42 @@
  * Layout implementado a partir do Figma (Desktop - Light mode configuração).
  *
  * Contrato com o backend:
- * - $user é fixo por enquanto; o backend troca pelos dados do usuário logado;
+ * - exige usuário logado (requireLogin); $user vem do banco (UserModel) com name e password_changed_days;
  * - os forms enviam POST para backend/controllers/update-account.php, update-password.php
  *   e delete-account.php;
- * - depois de salvar, o backend volta para esta tela deixando a mensagem em $_SESSION['notification'].
+ * - depois de salvar, o backend volta para esta tela deixando a mensagem em $_SESSION['notification'];
+ *   erro de campo volta com 'field' (name, current_password, new_password ou confirm_password).
  * A cor principal fica salva no navegador por enquanto (components/accent-color.php).
  */
 
-session_start();
+require_once __DIR__ . '/../../backend/config/auth.php';
+
+$sessionUser = requireLogin('login.php');
 
 $activePage = '';
 
-// O nome vem da sessão criada no login; a data da senha é fixa até o backend existir
+// Sem o banco, a tela abre com o nome da sessão e sem a data da senha
 $user = [
-    'name' => $_SESSION['user']['name'] ?? 'Usuário',
-    'password_changed_at' => '2026-11-11',
+    'name' => $sessionUser['name'],
+    'password_changed_days' => null,
 ];
+
+try {
+    require_once __DIR__ . '/../../backend/config/connection.php';
+    require_once __DIR__ . '/../../backend/models/UserModel.php';
+
+    $dbUser = findUserById($pdo, $sessionUser['id']);
+    if ($dbUser !== null) {
+        $user = [
+            'name' => $dbUser['name'],
+            'password_changed_days' => $dbUser['password_changed_days'],
+        ];
+    }
+} catch (Throwable $e) {
+    // Detalhe interno só no log do servidor; a tela mostra o aviso genérico
+    error_log('[settings] ' . $e->getMessage());
+    $_SESSION['notification'] = ['type' => 'error', 'code' => 'UNKNOWN_ERROR', 'field' => ''];
+}
 
 $sections = [
     'account' => ['label' => 'Conta', 'icon' => 'person'],
