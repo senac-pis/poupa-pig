@@ -12,4 +12,37 @@ return [
     'ACCOUNT_CREATED' => [
         'message' => 'Conta criada! Agora é só entrar.',
     ],
+    // Itens: item criado, editado e removido
+    'ITEM_CREATED' => [
+        'message' => 'Item adicionado!',
+    ],
+    'ITEM_UPDATED' => [
+        'message' => 'Item atualizado!',
+    ],
+    'ITEM_DELETED' => [
+        'message' => 'Item removido.',
+    ],
+    // Categorias: categoria criada, editada e removida
+    'CATEGORY_CREATED' => [
+        'message' => 'Categoria adicionada!',
+    ],
+    'CATEGORY_UPDATED' => [
+        'message' => 'Categoria atualizada!',
+    ],
+    'CATEGORY_DELETED' => [
+        'message' => 'Categoria removida.',
+    ],
+    // Configurações: nome e foto salvos, senha trocada e conta excluída (essa aparece no login)
+    'ACCOUNT_UPDATED' => [
+        'message' => 'Nome atualizado!',
+    ],
+    'PHOTO_UPDATED' => [
+        'message' => 'Foto atualizada!',
+    ],
+    'PASSWORD_UPDATED' => [
+        'message' => 'Senha alterada!',
+    ],
+    'ACCOUNT_DELETED' => [
+        'message' => 'Sua conta foi excluída. Até a próxima!',
+    ],
 ];

@@ -4,20 +4,19 @@
  *
  * Incluir no <head> das telas logadas, logo depois do theme.php.
  * Aplica a cor escolhida em Configurações > Aparência antes da página aparecer.
- * Por enquanto a cor fica salva no navegador; com o backend ela passa a vir do usuário.
+ * A cor vem do usuário (users.accent_color), guardada na sessão pelo login e pelo
+ * backend/controllers/update-accent-color.php. Sem cor salva, fica o rosa padrão.
  */
 $categoryStyles ??= require __DIR__ . '/../../backend/config/categories.php';
+require_once __DIR__ . '/../../backend/services/AccountService.php';
 
-// Mesma paleta das categorias, só os tons 300 a 500 (os mais claros não dão contraste com texto branco)
-$accentColors = [];
-foreach ($categoryStyles['color_groups'] as $accentLabel => $accentFamily) {
-    foreach (['300', '400', '500'] as $accentTone) {
-        $accentColors[] = "$accentFamily-$accentTone";
-    }
-}
+$accentColors = accentColorOptions();
+$userAccent = $_SESSION['user']['accent_color'] ?? null;
 ?>
 <script>
     const accentColors = <?= json_encode($accentColors) ?>;
+    // null quando o usuário nunca escolheu uma cor
+    const userAccentColor = <?= json_encode(in_array($userAccent, $accentColors, true) ? $userAccent : null) ?>;
 
     // Troca a secondary e os tons 100 a 500 da família pela cor escolhida (ex.: green-400)
     function applyAccentColor(color) {
@@ -34,8 +33,5 @@ foreach ($categoryStyles['color_groups'] as $accentLabel => $accentFamily) {
         root.setProperty('--color-secondary-strong', `var(--color-${family}-${strongTone})`);
     }
 
-    // O localStorage pode falhar (aba anônima, bloqueio); aí fica o rosa padrão
-    try {
-        applyAccentColor(localStorage.getItem('accent-color'));
-    } catch {}
+    applyAccentColor(userAccentColor);
 </script>

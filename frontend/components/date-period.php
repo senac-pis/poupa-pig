@@ -2,8 +2,10 @@
 /** @var array $datePeriod */
 // Antes do include: $datePeriod = ['start' => DateTime|null, 'end' => DateTime|null, 'background' => 'bg-white-100']
 // Opcional: 'required' => true. Os campos se chamam start_date e end_date, como no banco.
+// Opcional: 'error' => ['field' => 'start' ou 'end', 'message' => '...']: marca a caixa e mostra a mensagem embaixo
 // As datas chegam já validadas por quem usa (filtro ou página)
 $periodRequired = !empty($datePeriod['required']);
+$periodError = $datePeriod['error'] ?? null;
 $periodMonths = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 // Anos do seletor: de 15 anos para a frente até 2000, do mais novo para o mais antigo (como no Figma)
 $periodYears = range((int) date('Y') + 15, 2000);
@@ -16,9 +18,13 @@ $periodOptionClass = 'group flex w-full cursor-pointer items-center justify-betw
 <div class="relative" data-date-period>
     <div class="flex gap-2.5">
         <?php foreach (['start' => 'Início', 'end' => 'Fim'] as $periodField => $periodBoxLabel): ?>
-            <?php $periodDate = $datePeriod[$periodField]; ?>
+            <?php
+            $periodDate = $datePeriod[$periodField];
+            $periodHasError = ($periodError['field'] ?? '') === $periodField;
+            ?>
             <input type="hidden" name="<?= $periodField ?>_date" value="<?= $periodDate?->format('Y-m-d') ?>" data-period-input="<?= $periodField ?>">
             <button type="button" aria-haspopup="dialog" aria-expanded="false" data-period-box="<?= $periodField ?>"
+                <?= $periodHasError ? 'aria-invalid="true" aria-describedby="period-error" autofocus' : '' ?>
                 class="flex min-w-0 flex-1 cursor-pointer flex-col gap-2 rounded-2xl p-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-red-400 <?= $datePeriod['background'] ?>">
                 <span class="text-base font-medium"><?= $periodBoxLabel ?></span>
                 <span class="flex items-center gap-2.5">
@@ -29,8 +35,9 @@ $periodOptionClass = 'group flex w-full cursor-pointer items-center justify-betw
         <?php endforeach; ?>
     </div>
 
-    <?php if ($periodRequired): ?>
-        <p hidden class="mt-1 text-sm text-red-400" data-period-error>Escolha a data de início e a de fim.</p>
+    <?php if ($periodRequired || $periodError): ?>
+        <!-- Erro do servidor já chega visível; o do envio sem data o JS mostra -->
+        <p <?= $periodError ? '' : 'hidden' ?> id="period-error" class="mt-1 text-sm text-red-400" data-period-error><?= htmlspecialchars($periodError['message'] ?? 'Escolha a data de início e a de fim.') ?></p>
     <?php endif; ?>
 
     <!-- Um calendário só para as duas caixas: abre em cima delas (embaixo cortava no fim da tela) -->
@@ -372,6 +379,7 @@ $periodOptionClass = 'group flex w-full cursor-pointer items-center justify-betw
                     empty.forEach((input) => {
                         getBox(input.dataset.periodInput).setAttribute('aria-invalid', 'true');
                     });
+                    error.textContent = 'Escolha a data de início e a de fim.';
                     error.hidden = false;
                     getBox(empty[0].dataset.periodInput).focus();
                 });
@@ -379,3 +387,6 @@ $periodOptionClass = 'group flex w-full cursor-pointer items-center justify-betw
         }
     </script>
 </div>
+<?php if ($periodError): ?>
+    <p id="period-error" class="mt-[5px] px-4 text-sm text-red-400"><?= htmlspecialchars($periodError['message']) ?></p>
+<?php endif; ?>
