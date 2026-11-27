@@ -1,13 +1,3 @@
--- ==========================================================
--- PROJETO INTEGRADOR — TEMPLATE DO BANCO DE DADOS
--- MySQL / phpMyAdmin / XAMPP
--- ==========================================================
--- IMPORTANTE:
--- Este arquivo é apenas um ponto de partida.
--- A equipe deverá substituir nomes, tabelas, campos e relacionamentos
--- de acordo com o projeto definido na Atividade 01.
--- ==========================================================
-
 CREATE DATABASE IF NOT EXISTS projeto_integrador
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
@@ -33,17 +23,6 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-
--- ==========================================================
--- ATIVIDADE DA EQUIPE
--- Crie abaixo pelo menos duas entidades relacionadas.
--- Exemplo conceitual:
--- clientes (1) -------- (N) agendamentos
--- ==========================================================
-
--- CREATE TABLE ...
--- CREATE TABLE ...
--- ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY ...
 
 -- poupa pig --
 

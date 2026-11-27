@@ -45,8 +45,6 @@ if ($name === '') {
     redirectWithError('REQUIRED_FIELD', 'name', $name, $email);
 }
 
-// TODO: exige o código INVALID_NAME no errors.php (e a mensagem do Kaio).
-// Se não quiser criar o código, apague este bloco e use maxlength="120" no front.
 if (mb_strlen($name) > MAX_NAME_LENGTH) {
     redirectWithError('INVALID_NAME', 'name', $name, $email);
 }
