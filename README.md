@@ -1,6 +1,8 @@
 # 🐷 Poupa Pig
 
-![Logo Poupa Pig](docs/logo.jpg)
+> Uma pausa entre ver o produto e comprar o produto.
+
+<img src="docs/logo.jpg" alt="Logo Poupa Pig" width="260" align="right">
 
 ## Sobre o projeto
 
@@ -14,33 +16,55 @@ Muitas pessoas fazem compras por impulso, especialmente online, sem dar tempo pr
 
 Pessoas que querem controlar melhor o próprio consumo por impulso — sem perfil técnico específico. Sistema pensado para uso pessoal via navegador (desktop ou celular).
 
-## Funcionalidades previstas
+<br clear="right">
+
+## Funcionalidades
 
 - Cadastro e login de usuário (autenticação via banco, senha com hash)
-- CRUD de itens de compra (nome, preço, link/imagem, categoria, prioridade, prazo de quarentena)
-- CRUD de categorias customizáveis por usuário
-- Regras de decisão: comprei / desisti / ainda pensando (com extensão de prazo)
-- Reforço automático do motivo original ao vencer o prazo de quarentena
-- Dashboard com economia total, ranking de categorias e evolução (semanal ou mensal)
-- Simulador de "e se tivesse comprado tudo"
-- Busca de preço de referência via API do Mercado Livre
+- Itens: criar, editar e remover (nome, preço, link/imagem, categoria, motivo, prazo de quarentena)
+- Categorias personalizadas por usuário
+- Decisão do item: comprei ou desisti; o item sem decisão fica como "ainda pensando"
+- Dashboard mensal com o porquinho da economia e o resumo das decisões
+- Reviews de produtos
+- Configurações: nome, senha, foto, cor principal e exclusão de conta
 - Front-end responsivo
-- Exportação de histórico em PDF/CSV
+
+## A fazer
+
+- Recuperação de senha por e-mail (as telas existem, falta o backend)
+- Sair da conta (logout)
+
+## Fora do escopo
+
+- Extensão do prazo da quarentena
+- Lembrete do motivo ao vencer a quarentena
+- Ranking de categorias e evolução semanal no dashboard
+- Simulador de "e se tivesse comprado tudo"
+- Preço de referência via API do Mercado Livre
+- Exportação do histórico em PDF/CSV
 
 ## Tecnologias
 
-- HTML5
-- CSS3
-- Tailwind CSS
-- PHP
-- MySQL
-- phpMyAdmin
-- Git / GitHub
-- Figma
-- Trello
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?logo=tailwindcss&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?logo=php&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=white)
+![phpMyAdmin](https://img.shields.io/badge/phpMyAdmin-6C78AF?logo=phpmyadmin&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)
+![Figma](https://img.shields.io/badge/Figma-F24E1E?logo=figma&logoColor=white)
+![Trello](https://img.shields.io/badge/Trello-0052CC?logo=trello&logoColor=white)
 
 ## Documentação do projeto
-- [Project Exchange] (docs/PROJECT_EXCHANGE.md)
+
+- [Requisitos e regras de negócio](docs/REQUISITOS.md)
+- [Front-end](docs/FRONTEND.md)
+- [Back-end](docs/BACKEND.md)
+- [Banco de dados (schema, dicionário de dados e MER/DER)](docs/BANCO.md)
+- [Design Guide](docs/DESIGN_GUIDE.md)
+- [Manual de Identidade Visual](docs/IDENTIDADE_VISUAL.md)
+- [Instruções para agentes de IA](AGENTS.md)
+- [Project Exchange](docs/PROJECT_EXCHANGE.md)
 
 ## Estrutura do projeto
 
@@ -50,9 +74,8 @@ poupa-pig/
 │   ├── index.php
 │   ├── pages/
 │   ├── components/
-│   ├── css/styles.css
-│   ├── js/main.js
-│   └── assets/{images,icons,logos}/
+│   ├── assets/{images,icons,logos}/
+│   └── uploads/{items,users}/
 ├── backend/
 │   ├── config/
 │   ├── controllers/
@@ -60,13 +83,18 @@ poupa-pig/
 │   └── services/
 ├── database/
 │   ├── migrations/
-│   ├── seeds/
+│   ├── seeds/{products,demo}.sql
+│   ├── queries/{dml,dql}.sql
+│   ├── dump/poupa_pig.sql
 │   └── database.sql
 ├── docs/
 ├── .github/
 │   ├── ISSUE_TEMPLATE/
-│   └── pull_request_template.md
+│   ├── PULL_REQUEST_TEMPLATE/
+│   ├── PULL_REQUEST_TEMPLATE.md
+│   └── CODEOWNERS
 ├── .gitignore
+├── AGENTS.md
 └── README.md
 ```
 
@@ -75,16 +103,19 @@ poupa-pig/
 1. Clone o repositório: `git clone https://github.com/senac-pis/poupa-pig`
 2. Copie a pasta do projeto para `htdocs/` do XAMPP
 3. Inicie o Apache e o MySQL pelo painel do XAMPP
-4. Importe o arquivo `database/database.sql` pelo phpMyAdmin
-5. Acesse `http://localhost/poupa-pig` no navegador
+4. Importe pelo phpMyAdmin, nesta ordem:
+   1. `database/database.sql` (cria o banco `projeto_integrador` e as tabelas)
+   2. `database/seeds/products.sql` (produtos das reviews)
+5. Copie `backend/config/database.example.php` para `backend/config/database.php` e troque
+   `nome_do_banco` por `projeto_integrador`
+6. Acesse `http://localhost/poupa-pig` no navegador
 
 ## Equipe
 
 | Integrante | Responsabilidade |
 |---|---|
-| Kaio | Gerenciamento do projeto |
+| Kaio | Gerenciamento do projeto e front-end |
 | Levi | Back-end |
-| Gabriel | Front-end |
 | Lucas | Banco de dados |
 
 ## Links
