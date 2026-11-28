@@ -40,8 +40,6 @@ Sem o Apache do XAMPP, dá para subir com o servidor embutido do PHP, rodando na
 php -S localhost:8000
 ```
 
-Mais detalhes em `docs/SETUP_XAMPP.md`.
-
 ## Estrutura de pastas
 
 ```text

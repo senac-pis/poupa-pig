@@ -21,7 +21,7 @@ Pessoas que querem controlar melhor o próprio consumo por impulso — sem perfi
 ## Funcionalidades
 
 - Cadastro e login de usuário (autenticação via banco, senha com hash)
-- Itens: criar, editar e remover (nome, preço, link/imagem, categoria, motivo, prazo de quarentena)
+- Itens: criar, editar e remover (nome, preço, link/imagem, categoria, prazo de quarentena)
 - Categorias personalizadas por usuário
 - Decisão do item: comprei ou desisti; o item sem decisão fica como "ainda pensando"
 - Dashboard mensal com o porquinho da economia e o resumo das decisões
@@ -43,6 +43,34 @@ Pessoas que querem controlar melhor o próprio consumo por impulso — sem perfi
 - Preço de referência via API do Mercado Livre
 - Exportação do histórico em PDF/CSV
 
+## Arquitetura
+
+Aplicação web monolítica em **PHP puro**, sem framework. O PHP monta o HTML no servidor e cada
+ação do usuário é um formulário enviado a um controller, que volta para a tela com uma
+mensagem de sucesso ou de erro.
+
+```mermaid
+flowchart LR
+    U([Usuário]) --> P[Página<br/>frontend/pages]
+    P -- formulário POST --> C[Controller<br/>backend/controllers]
+    C --> S[Service<br/>backend/services]
+    S --> M[Model<br/>backend/models]
+    M -- PDO --> DB[(MySQL)]
+    C -- redireciona com<br/>mensagem na sessão --> P
+```
+
+| Camada     | Pasta                  | Responsabilidade                                                    |
+| ---------- | ---------------------- | ------------------------------------------------------------------- |
+| Página     | `frontend/pages/`      | Exige login, busca os dados e monta a tela com os componentes       |
+| Componente | `frontend/components/` | Pedaços reutilizáveis da interface (tabela, drawer, modal, filtros) |
+| Controller | `backend/controllers/` | Recebe o formulário, confere login e redireciona com a mensagem     |
+| Service    | `backend/services/`    | Valida a entrada e aplica as regras de negócio                      |
+| Model      | `backend/models/`      | Único lugar com SQL, sempre com prepared statements                 |
+| Config     | `backend/config/`      | Conexão, sessão/login, códigos de erro e mensagens de sucesso       |
+
+Mais detalhes em [Front-end](docs/FRONTEND.md), [Back-end](docs/BACKEND.md) e
+[Banco de dados](docs/BANCO.md).
+
 ## Tecnologias
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
@@ -55,14 +83,24 @@ Pessoas que querem controlar melhor o próprio consumo por impulso — sem perfi
 ![Figma](https://img.shields.io/badge/Figma-F24E1E?logo=figma&logoColor=white)
 ![Trello](https://img.shields.io/badge/Trello-0052CC?logo=trello&logoColor=white)
 
+## Requisitos
+
+- [XAMPP](https://www.apachefriends.org/) com **Apache**, **PHP 8.0 ou superior** e **MySQL/MariaDB**
+- Extensões do PHP `pdo_mysql` e `mbstring` (já vêm ativas no XAMPP)
+- Navegador atualizado
+- **Internet**, porque o Tailwind CSS e as fontes são carregados por CDN
+
 ## Documentação do projeto
 
+- [Escopo do projeto (PDF)](docs/ESCOPO.pdf)
 - [Requisitos e regras de negócio](docs/REQUISITOS.md)
 - [Front-end](docs/FRONTEND.md)
 - [Back-end](docs/BACKEND.md)
 - [Banco de dados (schema, dicionário de dados e MER/DER)](docs/BANCO.md)
-- [Design Guide](docs/DESIGN_GUIDE.md)
-- [Manual de Identidade Visual](docs/IDENTIDADE_VISUAL.md)
+- Design Guide: [PDF](docs/DESIGN_GUIDE.pdf) · [Markdown](docs/DESIGN_GUIDE.md)
+- Manual de Identidade Visual: [PDF](docs/IDENTIDADE_VISUAL.pdf) · [Markdown](docs/IDENTIDADE_VISUAL.md)
+- [Figma](https://www.figma.com/design/m9gI8kevph97sNSiFql9Ki/poupa-pig?node-id=0-1&t=AKTjgEf1Ks2EAlQu-1)
+- Cronograma e tarefas: [Trello](https://trello.com/invite/b/6a8a682f172e2057c6c1dd4c/ATTIe238042ab16ef4737719ffb31929012388465147/poupa-pig)
 - [Instruções para agentes de IA](AGENTS.md)
 - [Project Exchange](docs/PROJECT_EXCHANGE.md)
 
@@ -98,17 +136,31 @@ poupa-pig/
 └── README.md
 ```
 
-## Como executar
+## Como instalar
 
-1. Clone o repositório: `git clone https://github.com/senac-pis/poupa-pig`
-2. Copie a pasta do projeto para `htdocs/` do XAMPP
-3. Inicie o Apache e o MySQL pelo painel do XAMPP
-4. Importe pelo phpMyAdmin, nesta ordem:
+1. Clone o repositório dentro da pasta `htdocs/` do XAMPP:
+   ```bash
+   git clone https://github.com/senac-pis/poupa-pig
+   ```
+2. Inicie o **Apache** e o **MySQL** pelo painel do XAMPP
+3. Importe pelo phpMyAdmin, nesta ordem:
    1. `database/database.sql` (cria o banco `projeto_integrador` e as tabelas)
    2. `database/seeds/products.sql` (produtos das reviews)
-5. Copie `backend/config/database.example.php` para `backend/config/database.php` e troque
-   `nome_do_banco` por `projeto_integrador`
-6. Acesse `http://localhost/poupa-pig` no navegador
+   3. Opcional: `database/seeds/demo.sql` (usuários e itens fictícios para demonstração)
+
+## Como configurar
+
+1. Copie `backend/config/database.example.php` para `backend/config/database.php`
+2. Troque `nome_do_banco` por `projeto_integrador` e ajuste usuário e senha, se o seu MySQL
+   não usar o padrão do XAMPP (`root` sem senha)
+
+O `database.php` está no `.gitignore` e nunca deve ser versionado.
+
+## Como executar
+
+1. Acesse `http://localhost/poupa-pig` no navegador
+2. Crie uma conta ou, se importou o `demo.sql`, entre com `demo@poupapig.test` e a senha
+   `poupapig123`
 
 ## Equipe
 
